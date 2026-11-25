@@ -400,8 +400,13 @@ struct SettingsView: View {
                 Link(destination: SupportLinks.releases) { Label("Releases & Downloads", systemImage: "shippingbox") }
                 Link(destination: SupportLinks.issues) { Label("Report a Bug", systemImage: "ladybug") }
             } footer: {
-                Link(destination: SupportLinks.upstream) {
-                    Text(verbatim: "MACN-cheese is a macOS port of iPadn by mengangs (github.com/mengangs/ipadn), GPL-2.0.")
+                VStack(alignment: .leading, spacing: 4) {
+                    Link(destination: SupportLinks.upstream) {
+                        Text(verbatim: "Credits: based on iPadn by mengangs (github.com/mengangs/ipadn), GPL-2.0.")
+                    }
+                    Link(destination: URL(string: "https://github.com/EFForg/apkeep")!) {
+                        Text(verbatim: "Android downloads: apkeep by William Budington / Electronic Frontier Foundation (github.com/EFForg/apkeep), MIT, and its rs-google-play library (github.com/EFForg/rs-google-play), MIT. Device profiles from Aurora Store (AuroraOSS), GPL-3.0-or-later.")
+                    }
                 }
                 .font(.footnote).foregroundStyle(.secondary)
             }

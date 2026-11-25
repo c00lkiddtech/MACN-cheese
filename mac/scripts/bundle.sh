@@ -8,7 +8,14 @@ NAME=MACN-cheese
 BUNDLE_ID=com.oblivion.macn-cheese
 rm -rf "$APP"; mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$OUT/$NAME" "$APP/Contents/MacOS/$NAME"
+# Google Play helper (Rust, EFForg/rs-google-play + apkeep flow) for the Android tab.
+[ -x "$OUT/macn-play" ] || "$ROOT/mac/scripts/build_play_helper.sh"
+cp "$OUT/macn-play" "$APP/Contents/MacOS/macn-play"
 R=$APP/Contents/Resources
+mkdir -p "$R/Licenses"
+cp "$ROOT/mac/Vendor/apkeep/LICENSE" "$R/Licenses/apkeep-MIT.txt"
+cp "$ROOT/mac/Vendor/rs-google-play/gpapi/LICENSE" "$R/Licenses/rs-google-play-MIT.txt"
+cp "$ROOT/LICENSE" "$R/Licenses/MACN-cheese-iPadn-GPL-2.0.txt"
 python3 "$SRC/scripts/assemble_runtime.py" >/dev/null
 cp -R "$SRC/iPadn/Resources/SAPRuntime" "$SRC/iPadn/Resources/RevealAnimations" "$R/"
 cp "$SRC/iPadn/Resources/app-name-directory.json" "$SRC/iPadn/Resources/PrivacyInfo.xcprivacy" "$SRC/iPadn/Resources/ZIPFoundation-MIT.txt" "$R/"

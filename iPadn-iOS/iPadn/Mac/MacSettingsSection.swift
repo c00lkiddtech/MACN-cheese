@@ -1,4 +1,4 @@
-// MACN-cheese: Settings › Downloads › "Mac" section (save folder for .ipa/.pkg files).
+// MACN-cheese: Settings › Downloads › "Mac" section (save folder for .ipa/.pkg/.apk files).
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -26,7 +26,7 @@ struct MacSaveFolderSection: View {
         } header: {
             Text(verbatim: "Mac")
         } footer: {
-            Text(verbatim: "MACN-cheese doesn't install apps. Downloaded .ipa and .pkg files are saved here; use \"Show in Finder\" on a download to find it.")
+            Text(verbatim: "MACN-cheese doesn't install apps. Downloaded .ipa, .pkg and .apk files are saved here (Desktop by default); use \"Show in Finder\" on a download to find it.")
         }
         .fileImporter(isPresented: $picking, allowedContentTypes: [.folder]) { result in
             if case .success(let url) = result {

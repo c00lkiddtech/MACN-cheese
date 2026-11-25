@@ -26,7 +26,7 @@ xattr -dr com.apple.quarantine /Applications/MACN-cheese.app
 - Package library, package info and compare, FairPlay "Pro mode" tools where the Mac supports them
 - Wi-Fi transfer page, account backup and restore, watch list and update checks
 
-**Downloads on the Mac:** nothing gets installed. Finished `.ipa` / `.pkg` files are copied to a save folder (default `~/Downloads/MACN-cheese`, change it in Settings › Downloads › Mac). Click **Show in Finder** on any finished download.
+**Downloads on the Mac:** nothing gets installed. Finished `.ipa` / `.pkg` files are copied to a save folder (default `~/Desktop`, change it in Settings › Downloads › Mac). Click **Show in Finder** on any finished download.
 
 ## Disabled on the Mac
 
@@ -57,7 +57,16 @@ Notes:
 - `mac/scripts/xcstrings2strings.py` compiles the String Catalogs (all 11 languages) into `.strings`/`.stringsdict` without Xcode, and rebrands visible text.
 - Mac-specific code is in `iPadn-iOS/iPadn/Mac/`: an ActivityKit no-op shim, a login-keychain shim (ad-hoc builds can't use the data-protection keychain), save-folder handling and settings. Shared files are changed only behind `MacPort.isMac` or `#if targetEnvironment(macCatalyst)`, so the iOS build is unaffected.
 
+## Android (Google Play) downloads
+
+The **Android** tab downloads free Google Play apps: paste a package name (`com.example.app`) or a Play Store link, or search, then press **Download**. Base and split APKs are saved as a `.apk` (no splits), `.apks` bundle (install with SAI or `adb install-multiple`), `.xapk`, or a folder. It uses the bundled `macn-play` helper (`mac/PlayHelper`, Rust, built by `mac/scripts/build_play_helper.sh`) with anonymous sessions only.
+
+Nothing gets installed on the Mac: finished `.ipa`, `.pkg` and `.apk` files are saved to `~/Desktop` by default (Settings › Downloads › Mac to change it).
+
 ## Credits
 
 - **[iPadn](https://github.com/mengangs/ipadn)** by mengangs and contributors (GPL-2.0). This port is based on it.
+- **[apkeep](https://github.com/EFForg/apkeep)** by William Budington / Electronic Frontier Foundation (MIT, license in [`mac/Vendor/apkeep/LICENSE`](mac/Vendor/apkeep/LICENSE)). The Android tab's Google Play download flow (anonymous login, base + split APKs) follows apkeep.
+- **[rs-google-play](https://github.com/EFForg/rs-google-play)** (`gpapi`, `googleplay-protobuf`) by Bill Budington / EFF and David Weinstein (MIT, vendored in [`mac/Vendor/rs-google-play`](mac/Vendor/rs-google-play)). The Google Play protocol used by the bundled `macn-play` helper.
+- **[Aurora Store](https://gitlab.com/AuroraOSS/AuroraStore)** by AuroraOSS: device profiles and the anonymous session dispenser (GPL-3.0-or-later). No personal Google account is used.
 - Third-party components are listed in [`iPadn-iOS/THIRD_PARTY_NOTICES.md`](iPadn-iOS/THIRD_PARTY_NOTICES.md).

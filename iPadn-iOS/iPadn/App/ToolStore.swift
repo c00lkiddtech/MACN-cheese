@@ -146,7 +146,7 @@ struct UndoNotice: Identifiable {
 /// bind directly to `TabID`, while `selection` stays derived from the active
 /// `tabOrder` for vector-icon indexing and legacy integer callers.
 enum TabID: String, CaseIterable, Hashable, Sendable {
-    case search, downloads, packages, purchased, accounts
+    case search, downloads, android, packages, purchased, accounts
 }
 
 enum AccountRoute: Hashable, Codable {
@@ -296,6 +296,7 @@ final class ToolStore: ObservableObject {
     let accountNav = AccountNavigation()
     var tabOrder: [TabID] {
         var order: [TabID] = [.search, .downloads]
+        if MacPort.isMac { order.append(.android) }
         if settings.proMode { order.append(.packages) }
         order.append(contentsOf: [.purchased, .accounts])
         return order

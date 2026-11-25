@@ -1,7 +1,7 @@
 // MACN-cheese: helpers for the macOS (Mac Catalyst) build.
 // On the Mac nothing gets installed: finished downloads are copied into a
 // folder the user picks (Settings › Mac › Save Folder), default
-// ~/Downloads/MACN-cheese, and can be revealed in Finder.
+// ~/Desktop, and can be revealed in Finder.
 import Foundation
 import UIKit
 
@@ -18,9 +18,9 @@ enum MacPort {
     private static let autoSaveKey = "macnAutoSave"
 
     static var defaultFolder: URL {
-        (FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
-            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Downloads"))
-            .appendingPathComponent("MACN-cheese", isDirectory: true)
+        // Finished .ipa / .apk files go straight to the Desktop by default.
+        FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Desktop", isDirectory: true)
     }
 
     static var exportFolder: URL {

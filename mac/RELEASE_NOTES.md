@@ -6,7 +6,7 @@ First release of **MACN-cheese**, a native macOS (Mac Catalyst, Apple Silicon, m
 3. Sign in with your Apple ID inside the app. It's stored in your login keychain.
 
 ### Works
-Apple ID sign-in, search, version history and old versions, purchased list, multiple regions, download queue, package tools. Finished `.ipa`/`.pkg` files are saved to `~/Downloads/MACN-cheese` (configurable) with **Show in Finder**.
+Apple ID sign-in, search, version history and old versions, purchased list, multiple regions, download queue, package tools. Finished `.ipa`/`.pkg` files are saved to `~/Desktop` (configurable) with **Show in Finder**.
 
 ### Not on Mac
 Installing apps onto a device, Live Activities and widgets, on-device pairing, TestFlight (needs a closed-source upstream module), and processing protected Mac App Store `.pkg` files.

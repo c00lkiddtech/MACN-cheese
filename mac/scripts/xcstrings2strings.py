@@ -14,6 +14,12 @@ def brand(table, key, value):
     if table == 'InfoPlist' and key in ('CFBundleDisplayName', 'CFBundleName'): return BRAND
     return value.replace('iPadn', BRAND)
 
+# Keys whose visible text becomes "Download" on the Mac (value copied from the
+# key on the right, so every language gets its own word for Download).
+MAC_DOWNLOAD = {'安装': '下载', '一键安装': '下载', '安装新版本': '下载'}
+MAC_DOWNLOAD_EN = {'安装 %@': 'Download %@', '下载与安装': 'Downloads', '安装与导出': 'Download & Export',
+                   '一键安装（推荐）': 'Download (recommended)', '安装新版本': 'Download New Version'}
+
 def esc(s):
     return s.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t')
 
@@ -61,6 +67,12 @@ def compile_catalog(path, outdir, table):
         d = Path(outdir) / f'{lang}.lproj'
         d.mkdir(parents=True, exist_ok=True)
         strings = {k: brand(table, k, v) for k, v in strings.items()}
+        if BRAND and table == 'Localizable':
+            # MACN-cheese never installs anything: "Install" buttons download instead.
+            for k, src_key in MAC_DOWNLOAD.items():
+                if k in strings and src_key in strings: strings[k] = strings[src_key]
+            if lang == 'en':
+                strings.update({k: v for k, v in MAC_DOWNLOAD_EN.items() if k in strings})
         if table == 'InfoPlist' and BRAND:
             strings.setdefault('CFBundleDisplayName', BRAND); strings.setdefault('CFBundleName', BRAND)
         for rule in plurals.values():

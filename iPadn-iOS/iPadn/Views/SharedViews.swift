@@ -296,6 +296,7 @@ struct RootView: View {
 
     private let searchDestination = Destination(id: .search, title: "搜索", symbol: "magnifyingglass", kind: .tabSearch)
     private let downloadsDestination = Destination(id: .downloads, title: "下载", symbol: "arrow.down.circle.fill", kind: .tabDownloads)
+    private let androidDestination = Destination(id: .android, title: "Android", symbol: "arrow.down.app.fill", kind: .tabDownloads)
     private let packagesDestination = Destination(id: .packages, title: "应用包", symbol: "shippingbox.fill", kind: .tabPackages)
     private let purchasedDestination = Destination(id: .purchased, title: "已购", symbol: "bag.fill", kind: .tabPurchased)
     private let accountsDestination = Destination(id: .accounts, title: "账号", symbol: "person.crop.circle.fill", kind: .tabAccount)
@@ -303,6 +304,7 @@ struct RootView: View {
     /// 应用包 sits between 下载 and 已购, and only exists while 专业模式 is on.
     private var destinations: [Destination] {
         var list: [Destination] = [searchDestination, downloadsDestination]
+        if MacPort.isMac && sizeClass == .regular { list.append(androidDestination) }
         if store.settings.proMode {
             list.append(packagesDestination)
         }
@@ -362,6 +364,7 @@ struct RootView: View {
                         switch activeTab {
                         case .search: pageStack(.search)
                         case .downloads: pageStack(.downloads)
+                        case .android: pageStack(.android)
                         case .packages: pageStack(.packages)
                         case .purchased: pageStack(.purchased)
                         case .accounts: pageStack(.accounts)
@@ -599,6 +602,7 @@ struct RootView: View {
         switch id {
         case .search: SearchView()
         case .downloads: DownloadsView()
+        case .android: AndroidView()
         case .packages: PackagesView()
         case .purchased: PurchasedView()
         case .accounts: AccountsView()
