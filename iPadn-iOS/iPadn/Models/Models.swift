@@ -381,7 +381,8 @@ struct DownloadJob: Codable, Identifiable {
     /// True when the downloaded package can be installed on this iOS/iPadOS device.
     /// Excludes macOS packages and Apple TV (tvOS) IPAs.
     var canInstallOnCurrentDevice: Bool {
-        rawFormat == nil && platformLabel != "tvOS"
+        // MACN-cheese: nothing installs on the Mac; files are saved to a folder instead.
+        !MacPort.isMac && rawFormat == nil && platformLabel != "tvOS"
     }
 }
 
@@ -595,9 +596,10 @@ enum LocalResources {
     static let support: URL = prepared(
         (isPreview ? FileManager.default.temporaryDirectory.appendingPathComponent("iPadn-Preview/Support") :
             FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0])
-            .appendingPathComponent("iPadn", isDirectory: true))
+            .appendingPathComponent(MacPort.appName, isDirectory: true))
     static let packages: URL = prepared(
         (isPreview ? FileManager.default.temporaryDirectory.appendingPathComponent("iPadn-Preview/Documents") :
+            MacPort.isMac ? support :
             FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0])
             .appendingPathComponent("Packages", isDirectory: true))
     private static func prepared(_ url: URL) -> URL {

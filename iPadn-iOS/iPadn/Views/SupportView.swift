@@ -7,9 +7,18 @@ enum SupportLinks {
     static let afdian = URL(string: "https://afdian.com/a/mengangs")!
     /// USDT on BNB Smart Chain (BEP20) only.
     static let usdtAddress = "0x5f0cff7587b9fc305f9fa626135789bd5100818e"
+    #if targetEnvironment(macCatalyst)
+    // MACN-cheese: everything points at the port's own repository.
+    static let telegram = URL(string: "https://github.com/OBLIVIONck/MACN-cheese/issues")!
+    static let releases = URL(string: "https://github.com/OBLIVIONck/MACN-cheese/releases")!
+    static let repository = URL(string: "https://github.com/OBLIVIONck/MACN-cheese")!
+    static let issues = telegram
+    static let upstream = URL(string: "https://github.com/mengangs/ipadn")!
+    #else
     static let telegram = URL(string: "https://t.me/ipadn_official")!
     static let releases = URL(string: "https://github.com/mengangs/ipadn/releases")!
     static let repository = URL(string: "https://github.com/mengangs/ipadn")!
+    #endif
 }
 
 /// The settings row that opens the support page: a heart on a soft pink tile.

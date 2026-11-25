@@ -1420,6 +1420,7 @@ final class DownloadManager: NSObject, ObservableObject {
                 try? FileManager.default.removeItem(at: LocalResources.resumeURL(id))
                 if job.protectedMacPackage == true { MacPackageSecrets.delete(id) }
                 self.persist()
+                MacPort.autoSaveFinished(self.jobs[index], manager: self)
                 // Only downloaded Apple Store iOS/iPadOS app packages auto-install; external URLs, imported files, Mac packages, and Apple TV IPAs require manual action.
                 let installs = self.autoInstall && job.canInstallOnCurrentDevice && job.protectedMacPackage != true && job.asset != nil
                 // Kept across launches only for the silent install, which iOS can interrupt.

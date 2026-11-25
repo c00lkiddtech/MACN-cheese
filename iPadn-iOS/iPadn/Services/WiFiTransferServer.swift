@@ -223,12 +223,12 @@ final class WiFiTransferServer: @unchecked Sendable {
         let empty = items.isEmpty ? "<p>\(Self.escape(AppText.text("没有已完成的安装包。")))</p>" : ""
         return """
         <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-        <meta name="robots" content="noindex"><title>iPadn</title>
+        <meta name="robots" content="noindex"><title>\(MacPort.appName)</title>
         <style>body{font:15px -apple-system,system-ui,sans-serif;max-width:860px;margin:32px auto;padding:0 16px;color:#111}
         h1{font-size:22px}table{width:100%;border-collapse:collapse}td{padding:10px 6px;border-bottom:1px solid #ddd;vertical-align:top}
         a{color:#0a66d8;text-decoration:none;font-weight:600}.s{color:#777;font-size:12px;margin-top:2px}.r{text-align:right;white-space:nowrap}
         @media(prefers-color-scheme:dark){body{background:#111;color:#eee}td{border-color:#333}a{color:#5aa2ff}}</style></head>
-        <body><h1>iPadn</h1><p>\(Self.escape(AppText.text("点按名称下载安装包。关闭 iPadn 的传输页面后，这个地址会失效。")))</p>\(empty)<table>\(rows)</table></body></html>
+        <body><h1>\(MacPort.appName)</h1><p>\(Self.escape(AppText.text("点按名称下载安装包。关闭 iPadn 的传输页面后，这个地址会失效。")))</p>\(empty)<table>\(rows)</table></body></html>
         """
     }
 

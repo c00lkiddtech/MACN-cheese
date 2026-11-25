@@ -36,12 +36,17 @@ struct TranslateButton: View {
             .accessibilityIdentifier("translation.original")
         } else if #available(iOS 18.0, *), store.settings.directTranslation {
             DirectTranslationButton(text: text, translation: $translation)
+        } else if MacPort.isMac {
+            // MACN-cheese: the translation popover isn't available in Mac Catalyst.
+            DirectTranslationButton(text: text, translation: $translation)
         } else if #available(iOS 17.4, *) {
+            #if !targetEnvironment(macCatalyst)
             Button { presented = true } label: { Label("翻译", systemImage: "translate") }
                 .accessibilityIdentifier("translation.start")
                 .translationPresentation(isPresented: $presented, text: text) { translated in
                     withAnimation(.easeOut(duration: 0.2)) { translation = translated }
                 }
+            #endif
         }
     }
 }

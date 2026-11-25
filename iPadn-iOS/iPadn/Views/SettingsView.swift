@@ -66,12 +66,15 @@ struct SettingsView: View {
                 pageLink(.appearance, "paintbrush", "settings.page.appearance")
                 pageLink(.lock, "lock", "settings.page.lock")
                 pageLink(.sources, "clock.arrow.circlepath", "settings.page.sources")
+                if !MacPort.isMac {
                 NavigationLink(value: AccountRoute.installation) { Label("安装设置", systemImage: "arrow.down.app") }
                     .accessibilityIdentifier("settings.installation")
+                }
                 pageLink(.maintenance, "wrench.and.screwdriver", "settings.page.maintenance")
             }
             }
             if page == .downloads {
+            if MacPort.isMac { MacSaveFolderSection() }
             Section {
                 Stepper("同时下载：\(store.settings.maxConcurrentDownloads)", value: $store.settings.maxConcurrentDownloads, in: 1...6)
                 Stepper("等待任务上限：\(store.settings.maxQueuedDownloads)", value: $store.settings.maxQueuedDownloads, in: 1...100)
@@ -82,6 +85,7 @@ struct SettingsView: View {
                     }
                 Toggle("仅使用 Wi‑Fi 下载", isOn: $store.settings.wifiOnlyDownloads)
                     .accessibilityIdentifier("settings.wifi-only")
+                if !MacPort.isMac {
                 Toggle(isOn: $store.settings.autoInstall) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("下载完成后自动安装")
@@ -92,6 +96,7 @@ struct SettingsView: View {
                 .accessibilityIdentifier("settings.auto-install")
                 Toggle("实时活动显示下载进度", isOn: $store.settings.downloadLiveActivity)
                     .accessibilityIdentifier("settings.download-activity")
+                }
                 Toggle("搜索时优先显示已下架应用", isOn: $store.settings.prioritizeDelistedSearchResults)
                     .accessibilityIdentifier("settings.prioritize-delisted-search")
                 Toggle("兼容下载模式", isOn: $store.settings.compatibleDownloadMode)
@@ -348,7 +353,7 @@ struct SettingsView: View {
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 3) {
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Text(verbatim: "iPadn").font(.headline)
+                            Text(verbatim: MacPort.appName).font(.headline)
                             Text(verbatim: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")
                                 .font(.subheadline).foregroundStyle(.secondary)
                         }
@@ -389,12 +394,25 @@ struct SettingsView: View {
                     }
                 Link("项目与更新", destination: SupportLinks.releases)
             }
+            #if targetEnvironment(macCatalyst)
+            Section {
+                Link(destination: SupportLinks.repository) { Label("MACN-cheese on GitHub", systemImage: "chevron.left.forwardslash.chevron.right") }
+                Link(destination: SupportLinks.releases) { Label("Releases & Downloads", systemImage: "shippingbox") }
+                Link(destination: SupportLinks.issues) { Label("Report a Bug", systemImage: "ladybug") }
+            } footer: {
+                Link(destination: SupportLinks.upstream) {
+                    Text(verbatim: "MACN-cheese is a macOS port of iPadn by mengangs (github.com/mengangs/ipadn), GPL-2.0.")
+                }
+                .font(.footnote).foregroundStyle(.secondary)
+            }
+            #else
             Section {
                 NavigationLink(value: AccountRoute.support) { SupportRow() }
                     .accessibilityIdentifier("settings.support")
                 Link(destination: SupportLinks.telegram) { TelegramChannelRow() }
                     .accessibilityIdentifier("settings.telegram")
             }
+            #endif
             }
         }
         .compatibleOnChange(of: store.settings.directTranslation) { on in

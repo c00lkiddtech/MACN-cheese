@@ -1,406 +1,63 @@
-<div align="center">
+# MACN-cheese 🧀
 
-<img src="docs/images/icon.png" width="120" alt="iPadn">
+**MACN-cheese is a native macOS port of [iPadn](https://github.com/mengangs/ipadn)** by mengangs: search the App Store, browse version history, and download `.ipa` / `.pkg` files for apps your Apple ID owns, including older versions and other regions.
 
-# iPadn
+It's built from iPadn's SwiftUI source as a Mac Catalyst app (Apple Silicon, macOS 26 or later). This is the same app, adapted for the Mac. It isn't a wrapper and doesn't use an iOS emulator.
 
-**在 iPhone 和 iPad 上搜索、下载、安装你拥有的 App。**
-支持 iPhone、iPad、Apple TV 与 Mac 应用，包括历史版本与已下架应用。
+> MACN-cheese is an unofficial port and isn't affiliated with iPadn or Apple. Credit for the app goes to mengangs and the iPadn contributors. Licensed GPL-2.0, same as upstream (see [LICENSE](LICENSE)). The original READMEs are kept in [`docs/UPSTREAM_README_EN.md`](docs/UPSTREAM_README_EN.md) and [`docs/UPSTREAM_README.md`](docs/UPSTREAM_README.md).
 
-✨ **v2.3.5 修复 iOS 16/27 闪退与 iPadOS 导航 · TestFlight 支持 Apple TV 多平台与校验修复 · 自定义 177 商店地区 · FairPlay/登录/批量导入修复** · 📢 **反馈与新版优先前往 [官方 Telegram 频道](https://t.me/ipadn_official)**
+## Download
 
-[![最新版本](https://img.shields.io/github/v/release/mengangs/ipadn?label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC&logo=github&logoColor=white&labelColor=2E3136&color=3A6EA5)](https://github.com/mengangs/ipadn/releases/latest)
-[![Telegram 频道](https://img.shields.io/badge/Telegram-%40ipadn__official-2C82A9?logo=telegram&logoColor=white&labelColor=2E3136)](https://t.me/ipadn_official)
-[![下载量](https://img.shields.io/github/downloads/mengangs/ipadn/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F&logo=icloud&logoColor=white&labelColor=2E3136&color=2D8A68)](https://github.com/mengangs/ipadn/releases)
-![系统要求](https://img.shields.io/badge/iOS%20%2F%20iPadOS-16%2B-525D73?logo=apple&logoColor=white&labelColor=2E3136)
-[![许可证](https://img.shields.io/github/license/mengangs/ipadn?label=%E8%AE%B8%E5%8F%AF%E8%AF%81&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAzYTEgMSAwIDAgMC0xIDF2MUg1LjVhMSAxIDAgMSAwIDAgMmguMzhsLTIuNiA1LjJBMy41IDMuNSAwIDAgMCA2LjUgMTZhMy41IDMuNSAwIDAgMCAzLjIyLTMuOEw3LjEyIDdIMTF2MTJIN2ExIDEgMCAxIDAgMCAyaDEwYTEgMSAwIDEgMCAwLTJoLTRWN2gzLjg4bC0yLjYgNS4yQTMuNSAzLjUgMCAwIDAgMTcuNSAxNmEzLjUgMy41IDAgMCAwIDMuMjItMy44TDE4LjEyIDdoLjM4YTEgMSAwIDEgMCAwLTJIMTNWNGExIDEgMCAwIDAtMS0xeiIvPjwvc3ZnPg%3D%3D&labelColor=2E3136&color=525D73)](LICENSE)
+Get `MACN-cheese-<version>-macOS-arm64.zip` from [Releases](https://github.com/OBLIVIONck/MACN-cheese/releases), unzip it, and move `MACN-cheese.app` to `/Applications` or `~/Applications`.
 
-<p>
-  <a href="#支持-ipadn"><img src="https://img.shields.io/badge/%E6%94%AF%E6%8C%81%20iPadn-%E5%85%8D%E8%B4%B9%E5%BC%80%E6%BA%90%20%C2%B7%20%E8%AF%B7%E4%BD%9C%E8%80%85%E5%96%9D%E6%9D%AF%E5%92%96%E5%95%A1-B0436E?style=for-the-badge&logo=githubsponsors&logoColor=white&labelColor=2E3136" alt="支持 iPadn"></a>
-  <a href="https://afdian.com/a/mengangs"><img src="https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5-%E8%B5%9E%E5%8A%A9%E6%94%AF%E6%8C%81-6759A8?style=for-the-badge&logo=buymeacoffee&logoColor=white&labelColor=2E3136" alt="爱发电赞助"></a>
-</p>
+The app is **ad-hoc signed, not notarized**. On first launch, **right-click the app, choose Open, then choose Open again**. If macOS still refuses, go to System Settings › Privacy & Security and click "Open Anyway", or run:
 
-**简体中文** · [English](README_EN.md)
-
-[下载](https://github.com/mengangs/ipadn/releases/latest) · [Telegram 官方频道](https://t.me/ipadn_official) · ❤️ [**支持 iPadn**](#支持-ipadn) · [TestFlight 说明](#testflight-实验性新功能) · [安装下载的应用](#安装下载的应用) · [常见问题](#常见问题)
-
-</div>
-
-> [!IMPORTANT]
-> **加入官方频道 & Issues 归档说明**：为了将有限的维护精力集中在核心开发与更及时的交互支持上，**新版本（标准版、精简版及源码包）现优先发布在 [官方 Telegram 频道 (`@ipadn_official`)](https://t.me/ipadn_official)**（GitHub 同步略慢一步）。同时 **GitHub Issues 已停止受理新提问**（历史 Issues 保留只读归档以供检索），所有使用交流、TestFlight 排障与 BUG 反馈请直接前往频道**对应版本贴文评论区**提交。
-
-<p align="center">
-  <img src="docs/images/zh/01-search.jpg" width="24%" alt="搜索应用">
-  <img src="docs/images/zh/02-detail.jpg" width="24%" alt="应用详情">
-  <img src="docs/images/zh/03-versions.jpg" width="24%" alt="历史版本与更新说明">
-  <img src="docs/images/zh/04-prices.jpg" width="24%" alt="多地区比价">
-</p>
-
-<p align="center">
-  <img src="docs/images/zh/05-downloads.jpg" width="24%" alt="下载管理">
-  <img src="docs/images/zh/06-purchased.jpg" width="24%" alt="已购项目">
-  <img src="docs/images/zh/07-native-install.jpg" width="24%" alt="原生安装">
-  <img src="docs/images/zh/08-languages.jpg" width="24%" alt="阿拉伯语界面">
-</p>
-
----
-
-## 2.3.5 更新
-
-- **修复 iOS 16 / iOS 27 Beta 闪退与 iPadOS 专业模式导航栏异常**：移除强链接 iOS 17+/18+ 的 `UnevenRoundedRectangle` 与全部 `.onGeometryChange` 根治 iOS 16.0–16.2 闪退；修复 iOS 27.2 beta 2 应用详情加载历史版本崩溃；重构 iPadOS 全屏/专业模式导航栈隔离，修复标题丢失与工具栏图标跨标签泄露。
-- **TestFlight 支持 Apple TV 多平台下载、校验修复与详情页视觉优化**：详情页支持切换并下载 Apple TV（tvOS）等测试包（按平台独立索引，互不覆盖）；全应用在单色 TestFlight 图标旁并列展示单色客户端标识并在任务/包体详情显示对应客户端与最低系统版本，Apple TV 测试包下载后不显示「安装」且不触发自动安装；流式读取 Mach-O 头部与 FAT 32/64 位 `cryptid` 校验修复大型/多变体游戏误报「产物校验失败，已清理」；修复详情页顶部浅色虚化断层异常。
-- **自定义 177 个 Apple 商店地区**：在「设置 › 外观与图标 › 商店地区」开放管理全部 177 个商店地区，支持中英文名称与 ISO‑2 代码搜索筛选、点击勾选、拖拽排序、国旗展示及「恢复默认」。
-- **修复 FairPlay 高熵解密误拒、首次获取旧版报错与批量导入体验**：放行经反汇编确认的高熵插件（如 `_codecs_cn`）；完善登录 `5020` / 2FA 提示与 `SAPSigner` 阶段诊断；未购免费应用首次获取许可后自动刷新缓存并退避重试加载历史版本；修复「应用包」批量导入中途跳进详情打断队列的问题，新增实时计数与批量提示。详见 [更新说明](RELEASE_NOTES.md)。
-
-## 2.3.4 更新
-
-- **TestFlight 同步下载、后台续传、自动安装与灵动岛实时同步**：TestFlight 实际开始下载后实时同步到「下载」页顶部与底部角标，接入后台传输、`resumeData` 真暂停/断点续传、CDN 链接过期自动刷新、全部暂停/继续及「下载完成后自动安装」；同步接入灵动岛与锁屏实时活动并修复后台百分比停滞问题，移除会话级「已安装」残留。
-- **全应用统一列表/极简单色 TestFlight 图标与状态切换动效**：「下载」与「应用包」取消多余的 TestFlight 分组并统一前置单色 TestFlight 图标，全面补齐「已解密」「解密详情/记录」「Wi‑Fi 传输」与「存储空间」的覆盖与持久标识；重构 `AppStoreActionButton` 与下载页/TestFlight 列表详情页按钮，实现获取 → 加载弧 → 进度环 → 暂停/继续胶囊 → 完成打钩 → 安装全链路弹性形变动效。
-- **根治切号反复弹验证码、多手机号 2FA 与 0 应用账号卡顿**：切号与启动优先静默恢复本地会话与 Cookie 快照不再误触发系统验证码；新增多受信任手机号选择器、修复 2FA 弹窗竞态与瞬时 `503` 重试，优化 0 应用缓存 0ms 切换与 `TFDoh` 2 秒并发探测。
-- **应用包侧滑撤销、居中弹窗、配对优化与 iOS 17.4+ 防护**：专业模式「应用包」5 类列表项左滑删除统一接入 5 秒原子撤销，长按/批量删除与全应用二次确认升级为原生居中 Alert，精简「账号」页冗余入口；本机配对左上角对称放置「取消配对」并修复 6 位配对码提醒与换行；新增 App Store 账单/条款报错引导（`3038 / 5111 / 2022 / 3002 / 5062 / 5304`）、原生安装 iOS 17.4+ 前置校验与 Bonjour 跨设备端口隔离。详见 [更新说明](RELEASE_NOTES.md)。
-
-## 2.3.3 更新
-
-- **修复下载/获取偶发「Apple 暂时无法完成该操作」与诊断盲区**：补齐 `1008` 会话过期自动刷新、`-128`（`CountryMismatch`）账号商店地区自动纠偏、`buyProductFailure` 新版条款（`termsPage`）明确提示及密码变更/账号停用文案；Apple HTTP 200 业务失败现自动写入严格脱敏的 `RequestFailureLog`，未知数字错误码同步显示在提示中便于快速定位。
-- **「下载」页多选升级与统一撤销**：就地勾选交互对齐「应用包」，纳入 TestFlight 任务全选与批量删除，并合并常规下载与 TestFlight 的 5 秒撤销倒计时栈。
-- **SDK / Xcode 版本速查与左滑遮罩修复**：在包体与 TestFlight 详情新增构建 SDK / Xcode 版本速查；修复专业模式「应用包」与「解密记录」左滑时整行变灰遮罩的问题。
-- **全量安全、性能与 11 语言体验加固**：加固日志脱敏、TestFlight 多账号 Cookie 隔离与 `TFSINF` `cryptid` 校验；移除主线程磁盘 I/O 提升长列表滚动帧率；补齐 11 语言本地化、RTL、深浅色对比度与头像质感打磨。详见 [更新说明](RELEASE_NOTES.md)。
-
-## 2.3.2 更新
-
-- **完整同步「已购项目」历史与已下架应用**：在原有 DMAP 目录之外接入 Apple 完整购买历史接口（`/commerce/account/purchases`）并与 DMAP 合并，补齐多年历史与已下架应用及多语言购买日期；首次全量同步采用 **6 路并发**（顶部显示年份进度），后续日常刷新仅增量扫描当年，几秒即可完成，右上角菜单亦支持手动触发「同步完整购买历史」。
-- **修复切换账号后已购图标卡在灰色占位**：消除切号后防抖更新地区时误中止图标拉取的竞态，改为按 `地区|AppID` 去重并以每批 50 个稳定拉取，保留已有缓存不闪烁。
-- **修复 TestFlight 登录误报与设备身份缓存失效**：自动清理触发 `rinfo=67437824` 的过期 `iphone` 设备槽并重新配置；修复错误分类误将 `"iphone"` 匹配为 `"phone"` 导致提示「暂不支持选择多个受信任号码」的问题。
-- **修复深色模式「可更新」标签看不清**：「账号 › 设置」行右侧更新胶囊前景色改为自适应 `UX.onAccent`，深浅色模式下均清晰可辨。
-
-## 2.3.1 更新
-
-- **修复 iOS 16 闪退并恢复完整兼容（感谢 [@tageniu](https://github.com/tageniu) 在 PR #108 的贡献）**：将最低部署目标恢复为 **iOS 16.0**，对 `Symbols` / `Translation` / `ActivityKit` 保持弱链接与可用性防护，修复 iOS 16 PKCS#12 证书导入兼容性、Xcode `SigningCapability.swift` 工程引用与 `iPadnLiveActivity` 扩展双端编译问题。
-- **优化历史版本快速滚动与账号切换流畅度（已缓存与未缓存长列表）**：抽取独立无锁缩略图缓存 `VersionIconCache`，将 IPA Range 请求改写为无锁竞争的分块 `URLSessionDataDelegate` 传输、`RemoteZip` 解析移出主线程并按字节前缀过滤，扁平化详情页单层 `LazyVStack` 并隔离 `AccountsView` 与 `NoticeCenter`（账号页内切换就地即时反馈、全局提示改轻量化胶囊），消除快速滑动卡死白屏与切号卡顿。
-- **跨区下载失败诊断与一键切换账号（`2059` / `1010`）**：仅在下载实际失败后核验账号地区与搜索商店区差异（绝不预拦截可下载应用），在弹窗中提示精简地区原因，并提供 **「切换并重试」** 或 **「切换账号」** 快捷按钮。
-- **TestFlight / CI 稳定性提升**：自适应放宽冷启动 `SAPSigner` 初始化超时上限。
-
-## 2.3.0 更新
-
-> **从 v2.2.1 到 v2.3.0 的跨度说明**：自 GitHub 上一个正式版 **v2.2.1** 发布以来，我们在本地持续完成了 **20+ 次功能研发与底层重构迭代**，现统一合并发布 **v2.3.0**。除了从零打造的 **TestFlight 模块**，也囊括了应用内更新选择器、本地化名称展示与社区体系迁移。
-
-- **🆕 TestFlight 主页、下载与原生安装（实验性新功能）**：在「账号 › TestFlight」从零构建原生 Store 风格页面，按「测试中 / 平台不兼容 / 以往测试」分类浏览、搜索并多账号切换；支持实时速度与 ETA 进度条下载、SINF 注入与 `InstallCoordinator` 统一安装（原生安装可免解密免重签直装运行），并接入专业模式「应用包」与 `FairPlayCore` 解密定位；内置 `TFNet` 网络三模式、代理失败自动直连旁路、DoH/Fake-IP 预检及严格脱敏的轮转诊断日志。
-- **⬆️ 应用内更新弹窗升级（`AppUpdateView`）**：当发现 iPadn 新版本时，直接在应用内提示并支持一键切换 **标准版 / 精简版**、核对体积与更新说明后下载。
-- **🌏 本地化名称与界面打磨**：TestFlight、商店列表、「下载」及专业模式「应用包」列表全面支持中文等本地化应用名称显示；补充包体详情元数据与一键复制 `Bundle ID`，优化滚动性能与视觉质感。
-- **📢 接入官方 Telegram 频道（11 种语言同步）**：在「账号 › 设置 › 支持 iPadn」下方及支持详情页加入 [官方 Telegram 频道](https://t.me/ipadn_official) 入口；继续保持免费开源，新版优先于频道发布，GitHub Issues 停止受理并保留历史只读归档。
-- ⚠️ **实验性与免责提醒**：TestFlight 为全新开发功能，受 Apple 服务端策略、测试资格与网络规则影响，存在一定不稳定性；仅建议管理个人合法授权的测试应用，建议先用备用账号体验，详见下方 [TestFlight 实验性新功能](#testflight-实验性新功能) 说明。
-- 继续提供标准版和精简版，支持 iOS / iPadOS 16 及更新版本。
-
-> 更早版本的更新记录请查看 [GitHub Releases](https://github.com/mengangs/ipadn/releases) 与 [更新说明](RELEASE_NOTES.md)。
-
-## 能做什么
-
-| | |
-| --- | --- |
-| ✈️ **TestFlight（🆕 实验性）** | 在「账号 › TestFlight」管理名下测试应用：按测试中/平台不兼容/以往测试分类展示、搜索与多账号切换，支持实时速度与 SINF 注入原生免重签直装、投影到「下载」/「应用包」与本机解密，内置 `TFNet` 代理旁路与脱敏诊断。 |
-| 🔍 **搜索与发现** | 输入应用名称、App ID 或 App Store 链接，切换商店地区和平台（iPhone / iPad / Apple TV / Mac）。最近搜索以标签显示；「发现」、详情页预览图和用户评论均可按需在设置中关闭，开启时可浏览各地区的免费榜、付费榜、畅销榜以及同一开发者的其他应用。 |
-| 🌐 **翻译** | 简介和更新说明不是你的语言时，默认打开系统翻译面板。iOS 18 及以上可在「设置 › 外观与图标 › 翻译」开启直接替换并提前准备语言包，译文跟随软件语言，可显示原文。 |
-| 🕘 **历史版本** | 查看每个版本的版本号、日期、IPA 安装包大小、对应版本图标和更新说明并下载旧版本，也可以直接输入版本 ID。长按版本行可复制版本号或版本 ID；大字体下自动纵向排版。无法取得大小时显示「—」，不会套用最新版的大小。图标按需从对应 IPA 的主图标 PNG 读取并缓存（可在外观与图标设置关闭读取以节省流量），无法提取时显示占位，不套用当前商店图标；仅含 Assets.car 的版本暂不支持。已下载的应用可以「保留此版本」，不再提醒更新。 |
-| ⬇️ **下载管理** | 后台下载，随时暂停、继续、重试，实时显示速度与剩余时间；锁屏和灵动岛同步显示进度。可以只在 Wi‑Fi 下下载，也可以下载完成后自动安装。卡片侧滑可删除或分享，点其他位置收起；分享文件名包含应用名和版本号。删除支持 5 秒撤销倒计时，下载完成后进度环变为勾号和「安装」。长按仍使用系统菜单，重复点当前标签页回到顶部。任务详情中能查看安装包声明的权限、扩展、语言等信息。 |
-| 🔔 **更新提醒** | 已下载的应用有新版本时在列表里提示，后台检查后还会发送通知。 |
-| ⬆️ **iPadn 自动更新提醒** | 有新版本时在「设置」中提示并发送通知，可以直接在 App 内查看更新内容、下载新安装包，交给你的签名工具安装。 |
-| 👀 **关注应用** | 关注感兴趣的应用，有新版本、降价、限免或下架时提醒你，并记录价格走势。 |
-| 🌏 **多地区比价** | 对比应用和内购项目（含订阅）在各个国家或地区的价格，按你选的货币换算后从低到高排列，对比的地区可以自己选。 |
-| 📲 **一键安装** | 下载完成后点「安装」即可，无需描述文件或证书，并实时显示安装进度。 |
-| 🧩 **原生安装** | 通过系统自带的安装服务安装，效果与用电脑安装相同：App Store 能识别并更新，可以直接覆盖 App Store 已装的版本并保留数据；需要时还可以阻止 App Store 更新这个应用。iOS 27 起可在手机上完成配对，不需要电脑。 |
-| 📱 **本机应用** | 列出手机上已装的应用，找出 App Store 有新版本的应用一键全部更新。查不到商店资料的应用也能点开查看本机版本、Bundle ID 等信息，并区分当前地区未查到资料与查询失败，可单独重试商店查询。 |
-| 💻 **Wi‑Fi 传输** | 在同一 Wi‑Fi 下的电脑浏览器中直接下载已完成的安装包，只在页面打开时运行。 |
-| 💻 **Mac 应用** | 下载 Mac App Store 应用的 PKG 安装包，传到 Mac 上安装。 |
-| 🛍️ **已购项目** | 同步你获取过的所有应用，按名称或时间查找，可多选批量下载；一键找出已下架但仍可下载的应用并全部备份，已购清单可以导出成表格。 |
-| 📦 **已下架应用** | 只要你曾经获取过，下架应用不仅能通过 App ID 找到并下载，用名称或别名关键词搜索时也会结合目录与本机记录匹配，并可在设置开启优先排在前排显示。 |
-| 👥 **多个账号** | 保存多个 Apple 账号（邮箱或手机号），一键切换。 |
-| 🎮 **Apple Arcade** | 订阅了 Apple Arcade 的账号可以下载 Arcade 游戏。 |
-| 🔒 **应用锁** | 用面容 ID、触控 ID 或密码锁住 iPadn，多任务界面中也会隐藏内容。 |
-| 🧭 **小组件与快捷指令** | 主屏幕和锁屏小组件快速打开搜索、下载、已购和更新检查；快捷指令可以下载应用、检查更新、查看下载进度、关注应用等。 |
-| 🧰 **专业模式与解码** | 启用「专业模式」后解锁「应用包」页、下载安装包内容浏览与提取、双版本对比、账号令牌/设备标识管理，以及本机 FairPlay SINF IPA 解密与逐架构校验（默认关闭）。 |
-| 🛡️ **备份与维护** | 支持明文与 AES-256-GCM 密码加密的完整导出及导入预览（设置、关注、版本来源、Apple 会话凭证与 StoreProof），含存储清理与无敏诊断导出。 |
-
-界面参考 App Store 设计，外观默认跟随系统、图标默认深色（都可在设置中更改），支持动态字体和 iPad 侧栏，还可以在设置中更换应用图标。
-
-**界面语言**：简体中文、繁體中文、English、日本語、한국어、Русский、Español、Français、Deutsch、Português (Brasil)、العربية，阿拉伯语使用从右到左的排版。iPadn 跟随系统语言，也可以在「设置 › iPadn › 语言」中单独设置。英文由社区贡献者完善，其他语言为机器辅助翻译，欢迎在 [官方 Telegram 频道](https://t.me/ipadn_official) 或 Pull Request 中纠错。
-
-## 开始使用
-
-> 需要 **iOS / iPadOS 16** 或更新版本。
-
-1. 在 [Releases](https://github.com/mengangs/ipadn/releases/latest) 下载最新的 `iPadn-版本号-unsigned.ipa`。签名工具或免费账号的 App ID 数量有限时，可以改用精简版 `iPadn-版本号-lite-unsigned.ipa`：只需 1 个 App ID，但没有灵动岛进度和小组件。
-2. 用你常用的签名工具签名后安装到设备上。
-3. 打开 iPadn，在「账号」中登录 Apple 账号。需要双重认证时，输入受信任设备上显示的 6 位验证码。
-
-> iPadn 不在 App Store 上架，发布的安装包未签名，需要自行签名。
-
-### 在签名工具中添加源
-
-SideStore、AltStore、Feather 等支持 AltStore 源的签名工具，可以添加下面的地址。添加后在工具里就能安装 iPadn，有新版本时也能直接在工具里更新，不用再手动下载安装包。
-
-```
-https://raw.githubusercontent.com/mengangs/ipadn/main/altstore-source.json
+```bash
+xattr -dr com.apple.quarantine /Applications/MACN-cheese.app
 ```
 
-源文件在每次发布后自动更新，只列出本仓库 Releases 中的安装包。
-
-## 下载一个应用
-
-1. 在 **搜索** 中输入应用名称、App ID 或 App Store 链接。
-2. 点「获取」直接下载最新版本；或打开应用详情，在 **版本历史** 中选择旧版本。
-3. 在 **下载** 中查看进度，完成后点「安装」或分享按钮。
-
-**小技巧**
-
-- 想下载 Apple TV 或 iPad 版本：在搜索框下方把平台切换为对应设备。
-- 找不到已下架的应用：直接搜索它的 App ID。
-- 登录后详情页默认从 Apple 获取完整版本列表；账号没获取过的应用会显示公开的版本资料。
-- 长按下载卡片可以查看详情、导出文件或删除任务。
-- 想一次下载多个已购应用：在「已购」点「选择」，勾选后点「下载所选」。
-- 安装包太占空间：在「账号 › 设置 › 存储空间」一键删除旧版本安装包。
-- 历史版本查不全：在「账号 › 设置」的版本来源列表中点「检测全部来源」，查看每个来源是否可用；接口地址里用 `{id}` 或 `{appId}` 代表 App ID。
-
-## 安装下载的应用
-
-手动安装时，点下载卡片上的「安装」，按所选安装方式完成操作；网页安装方式需要在系统弹窗中确认，完成前请保持 iPadn 打开。
-
-开启「下载完成后自动安装」并选择「原生安装」后，完成的任务会依次直接安装，无需再次确认；需事先完成配对并保持 LocalDevVPN 连接。下载到安装期间使用静音音频维持后台运行，锁屏和灵动岛可显示下载、处理和安装状态（标准版，需开启实时活动）。后台运行仍受 iOS 限制，不能保证被系统终止后继续；未完成的任务会在重新打开 iPadn 后恢复处理。其他安装方式仍需回到 iPadn，由安装页和系统提示完成。
-
-在「账号 › 设置 › 安装设置」中可以选择安装方式：
-
-| 方式 | 适合谁 | 需要准备 |
-| --- | --- | --- |
-| **一键安装**（推荐） | 所有人 | 无需任何设置，安装时联网即可 |
-| **原生安装** | 希望 App Store 能识别、更新安装的应用，或要覆盖 App Store 已装版本 | LocalDevVPN 和一次配对，见下文 |
-| **本机证书** | 一键安装没有弹出安装窗口时（例如在 LiveContainer 中运行） | 在安装设置中创建证书，安装描述文件，并在「设置 › 通用 › 关于本机 › 证书信任设置」中开启信任 |
-| **代理服务** | 已在使用 Surge、Loon 等工具 | 自己的清单服务地址与代理规则 |
-
-使用本机证书安装时，系统会提示「ipadn.localtest.me 想要安装…」，这是 iPadn 在本机提供的安装服务。使用 Surge、Loon、Shadowrocket 等代理工具时，不用关闭代理，只需添加直连（DIRECT）规则：一键安装为 `api.palera.in`，本机证书为 `ipadn.localtest.me`。
-
-安装时会显示进度：系统开始安装、安装包传输百分比和传输完成。如果点「安装」后没有出现系统安装窗口，可以点「在 Safari 中安装」，在 Safari 中确认后回到 iPadn 等待完成。
-
-一键安装、本机证书和代理服务使用的系统网页安装通道不能覆盖 App Store 已装的同一应用，需要覆盖时请用「原生安装」。
-
-### 原生安装
-
-一键安装、本机证书和代理服务都通过系统的网页安装通道完成。这样装的应用，App Store 不会显示为已安装，也不能更新；爱思助手等工具会显示为「共享正版」；也不能覆盖 App Store 已装的同一应用。原生安装改用电脑安装软件所用的系统安装服务，安装结果与用电脑安装相同：App Store 能识别和更新，可以直接覆盖 App Store 版本并保留数据。安装包不会离开这台设备。
-
-**1. 安装 LocalDevVPN**
-
-从 App Store 安装 [LocalDevVPN](https://apps.apple.com/app/localdevvpn/id6755608044)。它只在本机内部转发连接，不经过外部服务器。每次原生安装前先在 LocalDevVPN 中点按连接。
-
-**2. 配对（只需一次）**
-
-- **iOS / iPadOS 27 及更新版本，不需要电脑**：在「安装设置 › 原生安装」中点按「在本机配对」，iPadn 会打开引导页。按提示打开「设置 › 隐私与安全性 › 开发者模式」，点按「与 iPadn 配对」，输入 iPadn 显示的配对码。配对码同时显示在灵动岛、锁屏和通知中，不用切回 iPadn。需要先开启开发者模式；看不到这个开关时，说明设备上还没有用开发者证书签名的应用，用企业证书签名时可能不会出现。
-- **iOS 17.4 – 26**：在电脑上用 [idevice_pair](https://github.com/jkcoxson/idevice_pair) 连接设备，生成「远程配对（RPPairing）」文件，放进「文件 › 我的 iPhone › iPadn」，在「原生安装」页 iPadn 会自动导入；也可以点「导入配对文件」从其他位置选取。电脑只需要用这一次，之后安装都不再需要电脑。
-
-**3. 检查连接**
-
-在 LocalDevVPN 中连接后，回到 iPadn 点「检查连接」，显示连接正常即可安装。
-
-修改锁屏密码、系统还原或在电脑上取消信任后，配对会失效，需要重新配对。配对文件相当于这台设备的连接凭据，不要分享给他人。
-
-也可以点分享按钮，把安装包交给其他安装工具。
-
-## Mac 应用
-
-1. 在搜索框下方把平台切换为 **Mac**。
-2. 打开应用详情，点「获取 PKG」。
-3. 下载完成后点分享按钮，通过隔空投送或「文件」传到 Mac 上安装。
-
-第一次下载 Mac 应用时，iPadn 会额外下载约 47 MB 的组件，之后会重复使用。开发者在官网提供的 DMG / PKG / ZIP 也可以在详情页直接下载。
-
-## TestFlight 实验性新功能
-
-> [!WARNING]
-> **实验性功能、稳定性与免责声明**：TestFlight 模块在 **v2.3.0** 中首次以**实验性新功能**形式推出。受 Apple 服务端接口策略、账号测试资格、网络/代理规则以及本机原生安装配对状态影响，部分场景可能遇到会话过期需重登、风控二次验证、详情解析失败或下载中断。**建议优先使用备用/测试账号体验，切勿分享配对文件、令牌或完整备份。** 本工具以 [GPL-2.0-or-later](LICENSE) 开源且与 Apple Inc. 无关，仅限合法授权测试与个人研究；使用过程中因接口变动、网络或签名环境导致的任何账号受限或数据损失，开发者不承担责任。
-
-**使用步骤：**
-
-1. 打开 **账号 › TestFlight**，登录或通过右上角头像切换你已加入 TestFlight 测试的 Apple 账号（TestFlight 与主站 iOS 解密会话按 DSID 各自独立持久化，不串号，因此首次进入 TF 可能需要单独完成一次认证）。
-2. 列表自动归类为三栏：**测试中**（活跃可下载构建，若应用同时提供 iOS 与 Apple TV 等平台测试包，可在详情页切换平台直接下载）、**平台不兼容**（如仅限 Mac / visionOS / 仅限 iPad 的测试版）与 **以往测试**（已过期或已移除的旧列表，只读展示）。
-3. 点按下载可实时查看下载速度与剩余时间；带有注入 SINF 的加密包体通过 **原生安装**（需完成本机配对并开启 LocalDevVPN）可直接安装运行，**无需解密或重签**。你也可以将其导出/分享，或在开启「专业模式」后于 **应用包** 页进行本地查看与 `FairPlayCore` 解密。
-4. 若遇到无法加载目录、卡在加载或 401/网络异常，点开 TF 页内的 **网络与诊断**：可在 **跟随系统 / 强制直连 / 强制代理** 间切换，查看 DNS 路径与 Fake-IP 预检，并一键复制严格脱敏的诊断日志到 [官方 Telegram 频道](https://t.me/ipadn_official) 对应版本贴文下反馈。
-
-## 专业模式
-
-在「账号 › 设置」中打开「专业模式」后：
-
-- 底部会出现「应用包」标签页，支持浏览原始 IPA 与本机 FairPlay 解密产物，对合法获取的加密 IPA 执行 SINF 解密与多架构校验，并查看/分享严格脱敏后的解密日志。
-- 下载任务详情中可以「浏览安装包内容」，查看任意文件并提取分享，文本和图片可直接预览。
-- 「安装包信息」中可以和同一应用的其他已下载版本对比，查看版本、权限、扩展、框架等变化。
-- 设置中会出现「账号与设备标识」，可以查看账号令牌和修改设备标识。令牌可以直接访问你的 Apple 账号，请勿分享给任何人；修改设备标识后账号可能需要重新登录。
-
-## 你的数据
-
-- 账号信息只保存在你的设备上，验证码不会被保存；只有在「设置 › 备份与维护」中主动导出完整备份（支持 PBKDF2-HMAC-SHA256 + AES-256-GCM 加密）时才会生成可携带的备份文件。
-- 下载及解密的安装包只保存在本机，不会上传到任何地方。「Wi‑Fi 传输」只在你打开它的页面时运行，地址带随机密钥，只接受同一局域网内的设备，离开页面即停止。
-- 比价时会从 open.er-api.com 获取参考汇率，请求中不包含你的账号信息。
-- 移除账号不会删除已下载的安装包；删除下载任务时会一并删除对应文件，操作前会再次确认。
-
-## 常见问题
-
-<details>
-<summary><b>为什么某个应用或版本无法下载？</b></summary>
-
-Apple 只允许下载你的账号拥有许可的应用。版本也可能已经下架或不在当前地区提供。可以换一个版本、切换商店地区，或切换到拥有该应用的账号。
-</details>
-
-<details>
-<summary><b>点「安装」后没有反应？</b></summary>
-
-请确认设备已联网，并在系统弹窗中点「安装」。没有出现系统弹窗时，可以点「在 Safari 中安装」，或在安装设置中改用「本机证书」（在 LiveContainer 中运行时尤其需要）。仍不行的话，可以分享安装包给其他安装工具，或在「设置 › 备份与维护」中导出诊断信息反馈给我们。
-</details>
-
-<details>
-<summary><b>在 LiveContainer 中无法导入导出文件，或一键安装没有反应？</b></summary>
-
-在 LiveContainer 里长按 iPadn，打开设置中的「修复文件导入」（Fix File Picker）。之后就能导入导出安装包和诊断信息，一键安装也能弹出系统安装窗口。
-</details>
-
-<details>
-<summary><b>安装时提示「已经安装，请删除后重试」？</b></summary>
-
-一键安装、本机证书和代理服务走的是系统的网页安装通道，系统不允许它覆盖 App Store 安装的同一应用，这是 iOS 的限制。请改用「原生安装」，可以直接覆盖并保留数据。原生安装仍会被拒绝的情况：要装的版本比设备上的旧（系统不允许降级），或设备上的应用来自 TestFlight、其他签名工具等不同渠道。
-</details>
-
-<details>
-<summary><b>为什么 App Store 里显示云朵、不能更新，爱思助手显示「共享正版」？</b></summary>
-
-这是用一键安装、本机证书或代理服务安装的应用。系统网页安装通道会去掉安装包里的购买记录，App Store 和电脑工具因此认不出它。用「原生安装」重新覆盖安装一次即可恢复，数据会保留。
-</details>
-
-<details>
-<summary><b>为什么 iOS 27 以下要用电脑才能配对？用一次就行吗？</b></summary>
-
-原生安装使用的是系统自带的安装服务，和电脑装 App 用的是同一个，它只接受已经配对、受信任的连接。iOS 27 之前，苹果只允许电脑通过数据线发起这种配对（手机上点「信任此电脑」并输入密码），手机上的 App 无法自己发起，所以需要先在电脑上生成配对文件。iOS 27 在「开发者模式」中加入了在手机上配对的入口，因此可以直接用「在本机配对」。
-
-电脑只需要用一次。配对文件导入 iPadn 后会一直有效，只有修改锁屏密码、还原系统，或在电脑上取消信任后才需要重新生成。iOS 17.4 以下没有这套连接方式，无法使用原生安装。
-</details>
-
-<details>
-<summary><b>原生安装提示无法连接本机安装服务？</b></summary>
-
-- 先在 LocalDevVPN 中点按连接，并保持 Wi-Fi 开启。
-- LocalDevVPN 与其他代理或 VPN 不能同时开启。Surge、Shadowrocket、Egern 等工具需要把 `10.7.0.1/32` 加入路由才可能代替 LocalDevVPN，这种用法尚未测试。
-- 提示配对文件失效时，重新配对一次（iOS 27 及更新版本可直接点「在本机配对」）。
-</details>
-
-<details>
-<summary><b>在本机配对时看不到配对码，或「设置」里没有「与 iPadn 配对」？</b></summary>
-
-- 本机配对需要 iOS / iPadOS 27 及更新版本，并且已开启「开发者模式」。
-- 点「在本机配对」后再去「设置」，配对期间 iPadn 会在后台保持运行；配对码显示在灵动岛、锁屏和通知中。请在「设置 › iPadn」中允许通知和「实时活动」。
-- 等待超过 5 分钟会自动停止，重新点「在本机配对」即可。
-</details>
-
-<details>
-<summary><b>下载或获取应用时要求输入验证码，但没有收到？</b></summary>
-
-- iPadn 会先替你向 Apple 请求验证码，验证码只发到登录了同一 Apple 账户的 iPhone、iPad 或 Mac，不发短信。设备上出现「Apple 账户登录请求」时点「允许」。
-- 没有出现时，可以在那台设备的「设置 › [你的姓名] › 登录与安全 › 获取验证码」中手动获取，同样可用。
-- 可以点「重新发送验证码」，频繁请求时 Apple 可能会暂时不发送。
-- 获取免费应用也要求验证，通常是 Apple 账户开启了免费下载需要密码。可以在登录了该账户的设备上打开「设置 › 媒体与购买项目 › 密码设置」关闭；开着「使用面容 ID 购买」时没有这个选项。
-- Apple 有时会根据风控要求重新验证，这由 Apple 决定，验证后下载会自动继续。
-</details>
-
-<details>
-<summary><b>点「获取」后要转一会才开始下载？</b></summary>
-
-每次请求都要先在本机完成 Apple 要求的签名。刚打开 iPadn 或闲置超过 5 分钟后，签名组件需要重新加载几秒；从没下载过的应用还要先领取许可，多两次 Apple 请求。iPadn 打开应用详情页时会提前准备签名组件，下载操作也会排在后台任务前面。
-</details>
-
-<details>
-<summary><b>下载到 100% 后又从头开始？</b></summary>
-
-部分签名方式下，系统后台下载服务无法把文件存进 iPadn，只能改用应用内下载从头再下。iPadn 每次安装后第一次启动会先用一个很小的文件检测，检测到问题就直接改用应用内下载，不会再下两遍。应用内下载时请保持 iPadn 在前台，退到后台约 30 秒后会暂停。更换签名后可以在「设置 › 下载」点「重新尝试后台下载」。
-</details>
-
-<details>
-<summary><b>已下架的应用怎么找？</b></summary>
-
-在搜索中输入它的 App ID。只要你的账号曾经获取过这个应用，就可以继续下载。下载过一次后，它的图标也会被记住。
-</details>
-
-<details>
-<summary><b>下载卡住了怎么办？</b></summary>
-
-检查网络后暂停再继续。下载失败的任务可以直接点「重试」，不会重复添加。
-</details>
-
-<details>
-<summary><b>TestFlight 测试版怎么下载和安装？需要解密重签吗？</b></summary>
-
-前往「账号 › TestFlight」即可浏览名下所有测试应用（按「测试中 / 平台不兼容 / 以往测试」自动分类）。下载完成后：
-- **原生安装**：TestFlight 安装包自带与下载账号绑定的 SINF 授权；在完成设备配对并开启 LocalDevVPN 后点「原生安装」，可直接安装运行，**无需额外解密或重签**。
-- **自签或保存**：也可以在安装包弹窗或「专业模式 › 应用包」中导出、分享或进行本机 FairPlay 解密（依赖签名工具提供的 App Group 权限；若为免费签名或受限环境，界面会自动提示可用方式并降级为保存/分享）。
-</details>
-
-<details>
-<summary><b>为什么「以往测试」里的旧 TestFlight 版本或 Mac 测试版不能下载？</b></summary>
-
-受 Apple TestFlight 服务端策略限制，仅能下载当前账号仍处于测试资格内、且尚未过期或被开发者移除的活跃 **iOS / iPadOS** 构建。已过期/已下架的「以往测试」条目及仅限 macOS / tvOS / visionOS 的项目目前仅作列表只读展示，无法像 App Store 应用那样回溯历史旧版。
-</details>
-
-<details>
-<summary><b>为什么 TestFlight 要重新登录，或者遇到 401 / 加载失败怎么办？</b></summary>
-
-为了防串号与安全隔离，TestFlight 会话（Mac/akd 作用域）与主站解密会话（iOS 作用域）按账号 DSID 分开持久化保存，因此首次使用或会话过期时可能需要单独认证一次（建议先用备用/测试号体验）。若遇到卡在加载、401 或代理不通，可在 TF 页面内点开「网络与诊断」，切换 **跟随系统 / 强制直连 / 强制代理**，查看 DoH 与 Fake-IP 预检，并复制脱敏日志到 [官方 Telegram 频道](https://t.me/ipadn_official) 反馈。
-</details>
-
-<details>
-<summary><b>多地区比价里只显示了中国区的内购？</b></summary>
-
-在中国大陆网络下，Apple 会把其他地区的 App Store 页面转到中国区，因此读不到外区的内购价格（应用本身的价格不受影响）。在代理工具中让 apps.apple.com 走代理后，下拉刷新即可。
-</details>
-
-<details>
-<summary><b>移除账号会删除已下载的应用吗？</b></summary>
-
-不会。移除账号只清除该账号的登录信息和已购记录。
-</details>
-
-## 支持 iPadn
-
-<div align="center">
-
-<sub>❤️ ❤️ ❤️</sub>
-
-iPadn **免费、开源、没有广告**。<br>
-如果它帮你省下了时间，或者你只是喜欢这个项目，欢迎请作者喝杯咖啡 ☕<br>
-你的鼓励是持续更新的动力。
-
-<a href="https://afdian.com/a/mengangs"><img src="https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5-%E8%AF%B7%E4%BD%9C%E8%80%85%E5%96%9D%E6%9D%AF%E5%92%96%E5%95%A1-6759A8?style=for-the-badge&logo=buymeacoffee&logoColor=white&labelColor=2E3136" alt="爱发电"></a>
-<img src="https://img.shields.io/badge/USDT-BEP20-2D8A68?style=for-the-badge&logo=tether&logoColor=white&labelColor=2E3136" alt="USDT BEP20">
-
-| 爱发电（支付宝、微信） | USDT（BNB Smart Chain / BEP20） |
-| :---: | :---: |
-| [**afdian.com/a/mengangs**](https://afdian.com/a/mengangs)<br><sub>可按月赞助，也可一次性支持</sub> | <img src="docs/images/usdt-bep20.png" width="180" alt="USDT 收款二维码"><br><code>0x5f0cff7587b9fc305f9fa626135789bd5100818e</code> |
-
-<sub>转账 USDT 前请核对网络为 BEP20、地址完全一致，其他网络或币种转入可能无法找回。<br>在 iPadn「账号 › 设置 › 支持 iPadn」中也可以扫码或复制地址。<br>点个 Star、加入官方 Telegram 频道或帮忙改进翻译，同样是很大的支持。</sub>
-
-</div>
-
-## 官方频道与反馈说明
-
-- **官方 Telegram 频道**：👉 [**https://t.me/ipadn_official**](https://t.me/ipadn_official)
-- **开源与发布节奏**：iPadn 继续保持**免费开源**，GitHub 仍会同步更新与发布源码；新版本安装包与源码归档会优先发布在官方 Telegram 频道（GitHub 同步略慢一步）。
-- **为什么关闭 GitHub Issues（仅保留历史归档）**：由于作者个人维护精力有限，分散在 GitHub Issues 与社区之间回复容易遗漏，也较难实时核对网络/配对/账号上下文。因此 **GitHub Issues 已停止受理新提交，原有历史 Issues（#1–#106）完整保留为只读归档以便检索参考**；所有新版本交流、TestFlight 问题排查与 BUG 反馈请前往官方 Telegram 频道**对应版本贴文评论区**提交（反馈时建议附上设备型号、系统版本、复现步骤，以及「账号 › 设置 › 备份与维护 › 导出诊断信息」生成的文件——内含严格脱敏处理，不含密码与凭据）。
-- **参与翻译与自编译**：界面文字位于 [`Localizable.xcstrings`](iPadn-iOS/iPadn/Resources/Localizable.xcstrings)，欢迎提交 Pull Request 改进翻译；自行编译步骤见 [BUILDING.md](iPadn-iOS/BUILDING.md)。
-
-## 致谢
-
-- [kylefmohr](https://github.com/kylefmohr) 贡献了英文翻译（[#35](https://github.com/mengangs/ipadn/pull/35)）。
-- 感谢所有提交问题和建议的用户，以及 iPadn 使用的开源项目，详见[第三方组件与许可](iPadn-iOS/THIRD_PARTY_NOTICES.md)。
-
-## 更多
-
-- [更新内容](RELEASE_NOTES.md)
-- [自行编译](iPadn-iOS/BUILDING.md)
-- [第三方组件与许可](iPadn-iOS/THIRD_PARTY_NOTICES.md)
-
-## 许可证
-
-iPadn 以 [GPL-2.0-or-later](LICENSE) 发布：你可以自由使用、修改和再分发，分发修改版时需要同样开放源代码。
-
-<sub>iPadn 与 Apple Inc. 无关，仅限合法授权应用下载、个人技术研究及本人测试版管理。实验性 TestFlight 功能及相关网络/账号操作风险由使用者自行承担。</sub>
+## What works on the Mac
+
+- Apple ID sign-in (stored in your login keychain), multiple accounts
+- Search, app details, prices, reviews, multi-region stores
+- Version history and downloading old versions
+- Purchased list
+- Download queue: pause, resume, retry
+- Package library, package info and compare, FairPlay "Pro mode" tools where the Mac supports them
+- Wi-Fi transfer page, account backup and restore, watch list and update checks
+
+**Downloads on the Mac:** nothing gets installed. Finished `.ipa` / `.pkg` files are copied to a save folder (default `~/Downloads/MACN-cheese`, change it in Settings › Downloads › Mac). Click **Show in Finder** on any finished download.
+
+## Disabled on the Mac
+
+| Feature | Why |
+|---|---|
+| Installing apps (one-tap / local / native install, auto-install, installed-apps list, installation settings) | These are iPhone/iPad-only (itms-services, installd, device pairing). The Mac saves files instead. |
+| Live Activities, Lock Screen and Dynamic Island download progress, widgets | ActivityKit/WidgetKit don't exist in Mac Catalyst. The extension isn't built. |
+| On-device pairing (iOS 27) | iPhone-only |
+| TestFlight tab | Depends on a closed-source `AppleAuth` module that isn't in the public repo |
+| Processing protected Mac App Store `.pkg` files (MacPKGBridge) | Optional Go/Unicorn component, not built yet for this release. Plain downloads still save. |
+| Telegram / donation links | Replaced with this repo's links. Please support upstream iPadn directly. |
+| Translation popover | Uses direct in-app translation instead, because the popover API isn't available in Catalyst |
+
+In-app update checks look at **this** repo's releases, never upstream iPadn's.
+
+## Building from source (no Xcode needed)
+
+Requirements: Apple Silicon Mac, Command Line Tools (`xcode-select --install`), Python 3, git.
+
+```bash
+cd mac
+CONFIG=release ./scripts/build.sh        # compiles ZIPFoundation, FairPlayCore and the app
+INSTALL=1 ./scripts/bundle.sh            # assembles, ad-hoc signs, installs ~/Applications/MACN-cheese.app
+```
+
+Notes:
+- Builds use `MacOSX26.5.sdk` from the Command Line Tools. In the 27 SDK, `@State` is a macro whose compiler plugin ships only with Xcode.
+- `mac/scripts/xcstrings2strings.py` compiles the String Catalogs (all 11 languages) into `.strings`/`.stringsdict` without Xcode, and rebrands visible text.
+- Mac-specific code is in `iPadn-iOS/iPadn/Mac/`: an ActivityKit no-op shim, a login-keychain shim (ad-hoc builds can't use the data-protection keychain), save-folder handling and settings. Shared files are changed only behind `MacPort.isMac` or `#if targetEnvironment(macCatalyst)`, so the iOS build is unaffected.
+
+## Credits
+
+- **[iPadn](https://github.com/mengangs/ipadn)** by mengangs and contributors (GPL-2.0). This port is based on it.
+- Third-party components are listed in [`iPadn-iOS/THIRD_PARTY_NOTICES.md`](iPadn-iOS/THIRD_PARTY_NOTICES.md).

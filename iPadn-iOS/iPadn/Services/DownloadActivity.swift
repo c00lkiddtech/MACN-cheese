@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import ActivityKit
 import Combine
 import Foundation
@@ -598,3 +599,16 @@ private final class BackgroundTime {
         UIApplication.shared.endBackgroundTask(id); id = .invalid
     }
 }
+
+#else
+import Foundation
+
+/// MACN-cheese: Live Activities don't exist on macOS, so this is a no-op.
+@MainActor
+final class DownloadActivity {
+    static let shared = DownloadActivity()
+    var hasActiveActivity: Bool { false }
+    func attach(_ manager: DownloadManager, enabled: Bool) {}
+    func sync() {}
+}
+#endif

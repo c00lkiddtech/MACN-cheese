@@ -351,7 +351,7 @@ struct RootView: View {
                             }
                         }
 
-                    }.navigationTitle("iPadn").navigationSplitViewColumnWidth(min: 220, ideal: 250, max: 300)
+                    }.navigationTitle(MacPort.appName).navigationSplitViewColumnWidth(min: 220, ideal: 250, max: 300)
                 } detail: {
                     // Mount only the active section's NavigationStack inside NavigationSplitView's
                     // detail column. Stacking sibling NavigationStacks in a ZStack causes SwiftUI

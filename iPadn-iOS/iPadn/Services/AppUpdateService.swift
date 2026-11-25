@@ -74,7 +74,8 @@ struct AppRelease: Codable, Equatable {
 }
 
 enum AppUpdateService {
-    static let repository = "mengangs/ipadn"
+    // MACN-cheese checks its own releases, never upstream iPadn's.
+    static let repository = MacPort.isMac ? "OBLIVIONck/MACN-cheese" : "mengangs/ipadn"
     static var currentVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
     }
@@ -110,7 +111,7 @@ enum AppUpdateService {
             guard let url = URL(string: address) else { continue }
             var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
             request.setValue(accept, forHTTPHeaderField: "Accept")
-            request.setValue("iPadn/" + currentVersion, forHTTPHeaderField: "User-Agent")
+            request.setValue(MacPort.appName + "/" + currentVersion, forHTTPHeaderField: "User-Agent")
             do {
                 let (data, rawResponse) = try await session.data(for: request)
                 guard let response = rawResponse as? HTTPURLResponse else {

@@ -2251,6 +2251,8 @@ final class ToolStore: ObservableObject {
         let key = "storage_appUpdateChecked"
         let cachedRelease: AppRelease? = LocalResources.defaults.data(forKey: "storage_appUpdate")
             .flatMap { try? JSONDecoder().decode(AppRelease.self, from: $0) }
+            // MACN-cheese: drop a cached upstream iPadn release.
+            .flatMap { $0.page.path.contains(AppUpdateService.repository) ? $0 : nil }
         // Upgrade legacy single-URL cache entries where `package` mistakenly pointed at `-lite-`.
         let legacyLiteOnlyCache = cachedRelease.map {
             ($0.package?.lastPathComponent.lowercased().contains("-lite") == true) && $0.litePackage == nil
@@ -3033,7 +3035,7 @@ final class ToolStore: ObservableObject {
     }
 
     func exportDiagnostics() throws -> URL {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("iPadn-Diagnostics.txt")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(MacPort.appName)-Diagnostics.txt")
         let data = Data(diagnosticsText().utf8)
         try data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         return url
@@ -3053,7 +3055,7 @@ final class ToolStore: ObservableObject {
         }
         let installLog = InstallLog.shared.text.isEmpty ? "(empty)" : cleanLines(InstallLog.shared.text)
         return [
-            "iPadn " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""), "Platform: \(settings.store.platform.title)", "Region: \(settings.store.country)",
+            MacPort.appName + " " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""), "Platform: \(settings.store.platform.title)", "Region: \(settings.store.country)",
             "Jobs: \(downloads.jobs.count)", "Concurrent limit: \(settings.maxConcurrentDownloads)",
             "Version sources: \(settings.versionSources.filter(\.enabled).count)",
             "Task states: " + downloads.jobs.map { "\($0.id.uuidString.prefix(8)): \($0.status.rawValue)" }.joined(separator: ", "),

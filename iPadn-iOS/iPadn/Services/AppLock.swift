@@ -167,7 +167,7 @@ struct AppLockScreen: View {
                         .environment(\.colorScheme, iconScheme)
                         .shadow(color: .black.opacity(colorScheme == .dark ? 0.5 : 0.18), radius: 22, y: 10)
                         .accessibilityHidden(true)
-                    Text(verbatim: "iPadn").font(.system(.largeTitle, design: .rounded).weight(.bold))
+                    Text(verbatim: MacPort.appName).font(.system(.largeTitle, design: .rounded).weight(.bold))
                     Label("已锁定", systemImage: "lock.fill")
                         .font(.footnote.weight(.medium)).foregroundStyle(.secondary)
                         .padding(.horizontal, 12).padding(.vertical, 6)

@@ -751,6 +751,11 @@ struct DownloadsView: View {
                                                 Button("解密 IPA", systemImage: "lock.open") { startDecrypt(job) }
                                             }
                                         }
+                                        if MacPort.isMac, manager.fileURL(job) != nil {
+                                            Button("Show in Finder", systemImage: "folder") {
+                                                perform { try await MacPort.saveAndReveal(job, manager: manager) }
+                                            }
+                                        }
                                         if let file = manager.fileURL(job) {
                                             Button("导出文件", systemImage: "square.and.arrow.up") { share = SharedFile(url: manager.exportURL(job) ?? file) }
                                             if job.canInstallOnCurrentDevice {
@@ -1352,6 +1357,8 @@ struct DownloadsView: View {
             } else {
                 manager.resume(job.id)
             }
+        case .completed where MacPort.isMac:
+            perform { try await MacPort.saveAndReveal(job, manager: manager) }
         case .completed:
             if job.rawFormat != nil, let file = manager.exportURL(job) {
                 share = SharedFile(url: file)
@@ -1580,6 +1587,8 @@ struct DownloadTaskRow: View {
             return .capsule(title: "重试", filled: false, enabled: true)
         case .completed where celebrating:
             return .completedCheck
+        case .completed where MacPort.isMac:
+            return .capsule(title: "Show in Finder", filled: true, enabled: true)
         case .completed:
             return job.canInstallOnCurrentDevice ? .capsule(title: "安装", filled: true, enabled: true) : nil
         }
@@ -1595,6 +1604,7 @@ struct DownloadTaskRow: View {
         case .paused: return AppText.text("继续")
         case .failed: return AppText.text("重试")
         case .completed where celebrating: return AppText.text("下载完成")
+        case .completed where MacPort.isMac: return "Show in Finder"
         case .completed: return AppText.text("安装")
         }
     }

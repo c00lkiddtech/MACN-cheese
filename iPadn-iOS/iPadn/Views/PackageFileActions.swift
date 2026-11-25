@@ -51,7 +51,7 @@ enum TemporaryExportSweeper {
 
             let rootItems = (try? fm.contentsOfDirectory(at: tmp, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
             for item in rootItems where (item.lastPathComponent.hasPrefix("iPadn-Backup-")
-                                         || item.lastPathComponent == "iPadn-Diagnostics.txt") && isStale(item) {
+                                         || item.lastPathComponent == "\(MacPort.appName)-Diagnostics.txt") && isStale(item) {
                 try? fm.removeItem(at: item)
             }
         }

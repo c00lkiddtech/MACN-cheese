@@ -171,7 +171,7 @@ struct DecryptLogView: View {
                 .appendingPathComponent("PackageExports", isDirectory: true)
                 .appendingPathComponent(UUID().uuidString)
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            let url = folder.appendingPathComponent("iPadn-diagnostic-redacted.txt")
+            let url = folder.appendingPathComponent("\(MacPort.appName)-diagnostic-redacted.txt")
             try text.write(to: url, atomically: true, encoding: .utf8)
             presentation = PackageFilePresentation(url: url, kind: kind)
         } catch { store.errorMessage = error.localizedDescription }

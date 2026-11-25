@@ -21,3 +21,7 @@
 *.mobileprovision
 signing.json
 *.log
+
+# MACN-cheese (macOS port) build output and fetched deps
+/mac/.build/
+/mac/deps/
