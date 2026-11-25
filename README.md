@@ -59,7 +59,7 @@ Notes:
 
 ## Android (Google Play) downloads
 
-The **Android** tab downloads free Google Play apps: paste a package name (`com.example.app`) or a Play Store link, or search, then press **Download**. Base and split APKs are saved as a `.apk` (no splits), `.apks` bundle (install with SAI or `adb install-multiple`), `.xapk`, or a folder. It uses the bundled `macn-play` helper (`mac/PlayHelper`, Rust, built by `mac/scripts/build_play_helper.sh`) with anonymous sessions only.
+The **Android** tab downloads free Google Play apps: paste a package name (`com.example.app`) or a Play Store link, or search, then press **Download**. By default you get **one installable `.apk`**: base and split APKs are merged with APKEditor, then zipaligned and signed with a local debug key (created once in `~/Library/Application Support/MACN-cheese/android-debug.jks`) by uber-apk-signer. Merging needs Java (`brew install openjdk`); on Macs with SIP/AMFI off, a small bundled shim (`mac/Tools/jitfix`) works around the JDK-8326663 HotSpot crash. `.apks`, `.xapk` and a folder of split APKs are still available, and **Convert .apks / .xapk to .apk…** merges files you already have (or run `macn-play merge file.apks`). Because the merged APK is re-signed, it can't update a copy installed from Google Play; uninstall that first. It uses the bundled `macn-play` helper (`mac/PlayHelper`, Rust, built by `mac/scripts/build_play_helper.sh`) with anonymous sessions only.
 
 Nothing gets installed on the Mac: finished `.ipa`, `.pkg` and `.apk` files are saved to `~/Desktop` by default (Settings › Downloads › Mac to change it).
 
@@ -68,5 +68,7 @@ Nothing gets installed on the Mac: finished `.ipa`, `.pkg` and `.apk` files are 
 - **[iPadn](https://github.com/mengangs/ipadn)** by mengangs and contributors (GPL-2.0). This port is based on it.
 - **[apkeep](https://github.com/EFForg/apkeep)** by William Budington / Electronic Frontier Foundation (MIT, license in [`mac/Vendor/apkeep/LICENSE`](mac/Vendor/apkeep/LICENSE)). The Android tab's Google Play download flow (anonymous login, base + split APKs) follows apkeep.
 - **[rs-google-play](https://github.com/EFForg/rs-google-play)** (`gpapi`, `googleplay-protobuf`) by Bill Budington / EFF and David Weinstein (MIT, vendored in [`mac/Vendor/rs-google-play`](mac/Vendor/rs-google-play)). The Google Play protocol used by the bundled `macn-play` helper.
+- **[APKEditor](https://github.com/REAndroid/APKEditor)** by REAndroid (Apache-2.0, jar and license in [`mac/Vendor/apkeditor`](mac/Vendor/apkeditor)). Merges base + split APKs into one `.apk`.
+- **[uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)** by Patrick Favre-Bulle (Apache-2.0, jar and license in [`mac/Vendor/uber-apk-signer`](mac/Vendor/uber-apk-signer)). Zipaligns and signs the merged `.apk` with a local debug key.
 - **[Aurora Store](https://gitlab.com/AuroraOSS/AuroraStore)** by AuroraOSS: device profiles and the anonymous session dispenser (GPL-3.0-or-later). No personal Google account is used.
 - Third-party components are listed in [`iPadn-iOS/THIRD_PARTY_NOTICES.md`](iPadn-iOS/THIRD_PARTY_NOTICES.md).

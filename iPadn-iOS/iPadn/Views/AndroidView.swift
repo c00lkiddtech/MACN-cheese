@@ -2,6 +2,7 @@
 // through the bundled `macn-play` helper (see Services/PlayHelperClient.swift).
 // Anonymous Aurora OSS sessions only; no personal Google account is used.
 import SwiftUI
+import UniformTypeIdentifiers
 
 @MainActor
 final class AndroidModel: ObservableObject {
@@ -60,6 +61,16 @@ final class AndroidModel: ObservableObject {
         }
     }
 
+    func convert(_ file: URL) {
+        error = nil; downloading = true; progress = PlayProgress(stage: "merge", message: "Merging split APKs into one .apk…"); lastFile = nil
+        task = Task {
+            defer { downloading = false }
+            let scoped = file.startAccessingSecurityScopedResource()
+            defer { if scoped { file.stopAccessingSecurityScopedResource() } }
+            do { lastFile = try await client.merge(file) } catch { self.error = error.localizedDescription }
+        }
+    }
+
     func cancel() {
         client.cancelAll()
         task?.cancel()
@@ -68,6 +79,7 @@ final class AndroidModel: ObservableObject {
 
 struct AndroidView: View {
     @ObservedObject private var model = AndroidModel.shared
+    @State private var picking = false
 
     var body: some View {
         Form {
@@ -81,6 +93,10 @@ struct AndroidView: View {
                         .disabled(model.busy || model.downloading || model.query.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 if model.busy { ProgressView() }
+                Button { picking = true } label: {
+                    Label { Text(verbatim: "Convert .apks / .xapk to .apk…") } icon: { Image(systemName: "arrow.triangle.merge") }
+                }
+                .disabled(model.downloading || model.helperMissing)
             } header: { Text(verbatim: "Google Play") } footer: {
                 Text(verbatim: model.helperMissing
                      ? "The Google Play helper is missing from this build."
@@ -138,7 +154,7 @@ struct AndroidView: View {
             if let file = model.lastFile {
                 Section {
                     Label { Text(verbatim: file.url.lastPathComponent) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
-                    Text(verbatim: "\(ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file)) · \(file.splitCount) split APK(s)")
+                    Text(verbatim: ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file) + (file.format == "apk" ? " · single installable .apk" : " · \(file.splitCount) split APK(s)"))
                         .font(.caption).foregroundStyle(.secondary)
                     Button { MacPort.reveal(file.url) } label: {
                         Label { Text(verbatim: "Show in Finder") } icon: { Image(systemName: "folder") }
@@ -147,6 +163,9 @@ struct AndroidView: View {
             }
         }
         .navigationTitle(Text(verbatim: "Android"))
+        .fileImporter(isPresented: $picking, allowedContentTypes: [.data, .zip, .folder]) { result in
+            if case .success(let url) = result { model.convert(url) }
+        }
     }
 
     private var progressText: String {

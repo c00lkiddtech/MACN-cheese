@@ -407,6 +407,9 @@ struct SettingsView: View {
                     Link(destination: URL(string: "https://github.com/EFForg/apkeep")!) {
                         Text(verbatim: "Android downloads: apkeep by William Budington / Electronic Frontier Foundation (github.com/EFForg/apkeep), MIT, and its rs-google-play library (github.com/EFForg/rs-google-play), MIT. Device profiles from Aurora Store (AuroraOSS), GPL-3.0-or-later.")
                     }
+                    Link(destination: URL(string: "https://github.com/REAndroid/APKEditor")!) {
+                        Text(verbatim: "APK merging: APKEditor by REAndroid (github.com/REAndroid/APKEditor), Apache-2.0. APK signing: uber-apk-signer by Patrick Favre-Bulle (github.com/patrickfav/uber-apk-signer), Apache-2.0.")
+                    }
                 }
                 .font(.footnote).foregroundStyle(.secondary)
             }

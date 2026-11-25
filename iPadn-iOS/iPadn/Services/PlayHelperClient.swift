@@ -54,21 +54,19 @@ struct PlayApp: Decodable, Identifiable, Hashable, Sendable {
 }
 
 enum PlayPackageFormat: String, CaseIterable, Identifiable, Sendable {
-    case auto, apk, apks, xapk, folder
+    case auto, apks, xapk, folder
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .auto: return "Automatic"
-        case .apk: return "Single .apk"
+        case .auto: return "APK (single, merged)"
         case .apks: return ".apks (SAI / bundletool)"
         case .xapk: return ".xapk (APKPure)"
-        case .folder: return "Folder of APKs"
+        case .folder: return "Folder of split APKs"
         }
     }
     var footnote: String {
         switch self {
-        case .auto: return "A single .apk when the app has no splits, otherwise an .apks bundle."
-        case .apk: return "Apps that ship as split APKs can't be merged into one file, so they fall back to .apks."
+        case .auto: return "One installable .apk: split APKs are merged with APKEditor and signed with a local debug key (needs Java)."
         case .apks: return "Base and split APKs in one archive. Install with SAI or `adb install-multiple`."
         case .xapk: return "Base and split APKs plus a manifest, for APKPure-style installers."
         case .folder: return "The raw base and split APKs side by side."
@@ -106,6 +104,8 @@ struct PlayHelperError: LocalizedError, Equatable {
         case "rateLimited", "dispenser": return "The anonymous Google Play sign-in service is busy. Try again in a minute."
         case "network": return "Couldn't reach Google Play. Check your connection. (\(message))"
         case "missingHelper": return "The Google Play helper (macn-play) isn't inside MACN-cheese.app. Rebuild with mac/scripts/build_play_helper.sh."
+        case "noJava": return "Merging split APKs into one .apk needs Java. Install it (for example `brew install openjdk`) or pick the .apks format."
+        case "merge": return "Couldn't merge the split APKs: \(message)"
         case "cancelled": return "Cancelled."
         default: return message
         }
@@ -241,6 +241,16 @@ final class PlayHelperClient: @unchecked Sendable {
         return PlayDownloadResult(path: path, format: done.string("format") ?? format.rawValue, size: done.int("size") ?? 0,
                                   package: done.string("package") ?? package, title: done.string("title") ?? package,
                                   versionName: done.string("versionName") ?? "", splitCount: Int(done.int("splitCount") ?? 0))
+    }
+
+    /// Converts an existing .apks / .xapk / folder into one signed .apk next to it.
+    func merge(_ file: URL) async throws -> PlayDownloadResult {
+        let events = try await run(["merge", file.path])
+        guard let done = events.last(where: { $0.name == "done" }), let path = done.string("path") else {
+            throw PlayHelperError(kind: "merge", message: "no file was produced")
+        }
+        return PlayDownloadResult(path: path, format: "apk", size: done.int("size") ?? 0, package: "",
+                                  title: done.string("title") ?? file.lastPathComponent, versionName: "", splitCount: 0)
     }
 
     func cancelAll() {

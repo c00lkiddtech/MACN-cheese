@@ -540,19 +540,27 @@ async fn download(args: &Args) -> Res<()> {
 
     emit(json!({"event": "status", "stage": "package", "message": "Saving…"}));
     let stem = safe_name(&if version_name.is_empty() { title.clone() } else { format!("{} {}", title, version_name) });
+    // Default: one merged, signed, installable .apk (APKEditor merge + uber-apk-signer).
     let effective = match format.as_str() {
-        "auto" => if got.splits.is_empty() && got.obbs.is_empty() { "apk" } else { "apks" },
-        "apk" if !got.splits.is_empty() => {
-            emit(json!({"event": "status", "stage": "package", "message": "This app ships as split APKs, so it was saved as .apks (install with SAI or adb install-multiple)."}));
-            "apks"
-        }
+        "auto" if !got.obbs.is_empty() => "apks",
+        "auto" => "apk",
         other => other,
     }.to_string();
     let io_err = |e: io::Error| Failure::new("io", e.to_string());
     let saved: PathBuf = match effective.as_str() {
-        "apk" => {
+        "apk" if got.splits.is_empty() => {
             let target = unique_path(&out, &stem, Some("apk"));
             fs::rename(&got.base, &target).map_err(io_err)?;
+            target
+        }
+        "apk" => {
+            emit(json!({"event": "status", "stage": "merge", "message": "Merging split APKs into one .apk…"}));
+            let dir = tmp.join("merge-in");
+            fs::create_dir_all(&dir).map_err(io_err)?;
+            fs::rename(&got.base, dir.join("base.apk")).map_err(io_err)?;
+            for (s, p) in &got.splits { fs::rename(p, dir.join(format!("split_{}.apk", s))).map_err(io_err)?; }
+            let target = unique_path(&out, &stem, Some("apk"));
+            merge_and_sign(&dir, &target, &tmp)?;
             target
         }
         "apks" => {
@@ -629,9 +637,141 @@ async fn download(args: &Args) -> Res<()> {
 }
 
 // ---------------------------------------------------------------------------
+// Split APK merging (REAndroid/APKEditor, Apache-2.0) and signing
+// (patrickfav/uber-apk-signer, Apache-2.0). Both are bundled jars that run on
+// the user's Java; libmacnjitfix.dylib works around JDK-8326663 (HotSpot dies
+// with SIGBUS on Apple Silicon when SIP/AMFI are off).
+
+fn tools_dir() -> Option<PathBuf> {
+    if let Ok(d) = std::env::var("MACN_PLAY_TOOLS") { return Some(PathBuf::from(d)); }
+    let exe = std::env::current_exe().ok()?;
+    let macos = exe.parent()?;
+    for c in [macos.join("../Resources/AndroidTools"), macos.join("AndroidTools"), macos.join("../Vendor")] {
+        if c.join("APKEditor.jar").exists() || c.join("apkeditor/APKEditor.jar").exists() { return Some(c); }
+    }
+    None
+}
+
+fn find_tool(dir: &Path, name: &str, sub: &str) -> Option<PathBuf> {
+    [dir.join(name), dir.join(sub).join(name)].into_iter().find(|p| p.exists())
+}
+
+fn find_java() -> Option<PathBuf> {
+    if let Ok(h) = std::env::var("JAVA_HOME") {
+        let p = PathBuf::from(h).join("bin/java");
+        if p.exists() { return Some(p); }
+    }
+    let out = std::process::Command::new("/usr/libexec/java_home").output().ok()?;
+    if !out.status.success() { return None; }
+    let p = PathBuf::from(String::from_utf8_lossy(&out.stdout).trim()).join("bin/java");
+    p.exists().then_some(p)
+}
+
+fn java_cmd(java: &Path, tools: &Path) -> std::process::Command {
+    let mut c = std::process::Command::new(java);
+    if let Some(fix) = find_tool(tools, "libmacnjitfix.dylib", "jitfix") {
+        c.env("DYLD_INSERT_LIBRARIES", fix);
+    }
+    c.arg("--enable-native-access=ALL-UNNAMED").arg("-Djava.awt.headless=true");
+    c
+}
+
+fn run_quiet(mut c: std::process::Command, what: &str) -> Res<()> {
+    let out = c.output().map_err(|e| Failure::new("merge", format!("couldn't start Java for {}: {}", what, e)))?;
+    if !out.status.success() {
+        let mut msg = String::from_utf8_lossy(&out.stderr).to_string();
+        msg.push_str(&String::from_utf8_lossy(&out.stdout));
+        let tail: String = msg.lines().rev().take(4).collect::<Vec<_>>().into_iter().rev().collect::<Vec<_>>().join(" | ");
+        return Err(Failure::new("merge", format!("{} failed: {}", what, tail)));
+    }
+    Ok(())
+}
+
+/// Local debug signing key, generated once with keytool.
+fn debug_keystore(java: &Path, tools: &Path) -> Res<PathBuf> {
+    let home = std::env::var("HOME").unwrap_or_default();
+    let dir = PathBuf::from(home).join("Library/Application Support/MACN-cheese");
+    let ks = dir.join("android-debug.jks");
+    if ks.exists() { return Ok(ks); }
+    fs::create_dir_all(&dir).map_err(|e| Failure::new("io", e.to_string()))?;
+    let keytool = java.with_file_name("keytool");
+    // keytool doesn't take the JVM flags java_cmd adds.
+    let mut c = std::process::Command::new(&keytool);
+    if let Some(fix) = find_tool(tools, "libmacnjitfix.dylib", "jitfix") { c.env("DYLD_INSERT_LIBRARIES", fix); }
+    c.args(["-genkeypair", "-keystore"]).arg(&ks).args([
+        "-storetype", "PKCS12", "-storepass", "android", "-keypass", "android", "-alias", "macn-cheese",
+        "-keyalg", "RSA", "-keysize", "2048", "-validity", "10000",
+        "-dname", "CN=MACN-cheese Local Debug, O=MACN-cheese, C=US",
+    ]);
+    run_quiet(c, "creating the signing key")?;
+    Ok(ks)
+}
+
+/// Merges `dir` (base.apk + split_*.apk) into `target`, zipaligned and signed.
+fn merge_and_sign(dir: &Path, target: &Path, work: &Path) -> Res<()> {
+    let tools = tools_dir().ok_or_else(|| Failure::new("merge", "APK merge tools aren't bundled with this build"))?;
+    let java = find_java().ok_or_else(|| Failure::new("noJava", "Merging split APKs needs Java (e.g. `brew install openjdk`)"))?;
+    let editor = find_tool(&tools, "APKEditor.jar", "apkeditor").ok_or_else(|| Failure::new("merge", "APKEditor.jar missing"))?;
+    let signer = find_tool(&tools, "uber-apk-signer.jar", "uber-apk-signer").ok_or_else(|| Failure::new("merge", "uber-apk-signer.jar missing"))?;
+    let merged = work.join("merged.apk");
+    let _ = fs::remove_file(&merged);
+    let mut c = java_cmd(&java, &tools);
+    c.arg("-jar").arg(&editor).args(["m", "-f", "-i"]).arg(dir).arg("-o").arg(&merged);
+    run_quiet(c, "merging split APKs")?;
+    emit(json!({"event": "status", "stage": "sign", "message": "Signing the merged .apk…"}));
+    let ks = debug_keystore(&java, &tools)?;
+    let signed_dir = work.join("signed");
+    let _ = fs::remove_dir_all(&signed_dir);
+    fs::create_dir_all(&signed_dir).map_err(|e| Failure::new("io", e.to_string()))?;
+    let mut c = java_cmd(&java, &tools);
+    c.arg("-jar").arg(&signer).arg("-a").arg(&merged).arg("-o").arg(&signed_dir)
+        .args(["--allowResign", "--ks"]).arg(&ks)
+        .args(["--ksAlias", "macn-cheese", "--ksPass", "android", "--ksKeyPass", "android"]);
+    run_quiet(c, "signing")?;
+    let signed = fs::read_dir(&signed_dir).map_err(|e| Failure::new("io", e.to_string()))?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .find(|p| p.extension().map_or(false, |x| x == "apk"))
+        .ok_or_else(|| Failure::new("merge", "signer produced no .apk"))?;
+    fs::rename(&signed, target).or_else(|_| fs::copy(&signed, target).map(|_| ()))
+        .map_err(|e| Failure::new("io", e.to_string()))?;
+    Ok(())
+}
+
+/// `macn-play merge <file.apks|file.xapk|folder> [--out DIR]`: converts an
+/// existing split bundle into one installable .apk next to it (original kept).
+fn merge_cmd(args: &Args) -> Res<()> {
+    let input = PathBuf::from(args.positional.get(1).ok_or_else(usage)?);
+    if !input.exists() { return Err(Failure::new("notFound", format!("{} doesn't exist", input.display()))); }
+    let out = args.value("--out").map(PathBuf::from)
+        .unwrap_or_else(|| input.parent().map(Path::to_path_buf).unwrap_or_else(|| PathBuf::from(".")));
+    let stem = input.file_stem().map(|s| s.to_string_lossy().to_string()).unwrap_or_else(|| "merged".into());
+    let work = std::env::temp_dir().join(format!("macn-merge-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&work);
+    struct Cleanup(PathBuf);
+    impl Drop for Cleanup { fn drop(&mut self) { let _ = fs::remove_dir_all(&self.0); } }
+    let _c = Cleanup(work.clone());
+    let dir = if input.is_dir() { input.clone() } else {
+        let d = work.join("in");
+        fs::create_dir_all(&d).map_err(|e| Failure::new("io", e.to_string()))?;
+        emit(json!({"event": "status", "stage": "unpack", "message": "Unpacking…"}));
+        let st = std::process::Command::new("/usr/bin/unzip").args(["-qq", "-o"]).arg(&input).arg("*.apk").arg("-d").arg(&d)
+            .status().map_err(|e| Failure::new("io", e.to_string()))?;
+        if !st.success() { return Err(Failure::new("merge", "couldn't unpack the bundle (no .apk files inside?)")); }
+        d
+    };
+    emit(json!({"event": "status", "stage": "merge", "message": "Merging split APKs into one .apk…"}));
+    let target = unique_path(&out, &stem, Some("apk"));
+    merge_and_sign(&dir, &target, &work)?;
+    let size = fs::metadata(&target).map(|m| m.len()).unwrap_or(0);
+    emit(json!({"event": "done", "path": target.to_string_lossy(), "format": "apk", "size": size,
+                "package": "", "title": stem, "versionName": "", "splitCount": 0}));
+    Ok(())
+}
+
+// ---------------------------------------------------------------------------
 
 fn usage() -> Failure {
-    Failure::new("usage", "usage: macn-play dispense | details <pkg> | search <words> [--limit N] | download <pkg> --out DIR [--version-code N] [--no-splits] [--obb] [--format auto|apk|apks|xapk|folder]")
+    Failure::new("usage", "usage: macn-play dispense | details <pkg> | search <words> [--limit N] | merge <file.apks|file.xapk|dir> [--out DIR] | download <pkg> --out DIR [--version-code N] [--no-splits] [--obb] [--format auto|apk|apks|xapk|folder]")
 }
 
 #[tokio::main(flavor = "current_thread")]
@@ -644,6 +784,7 @@ async fn main() {
             Some("details") => details(&args).await,
             Some("search") => search(&args).await,
             Some("download") => download(&args).await,
+            Some("merge") => merge_cmd(&args),
             Some("version") | Some("--version") => {
                 emit(json!({"event": "version", "version": env!("CARGO_PKG_VERSION")}));
                 Ok(())

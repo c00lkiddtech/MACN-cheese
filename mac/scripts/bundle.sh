@@ -12,7 +12,12 @@ cp "$OUT/$NAME" "$APP/Contents/MacOS/$NAME"
 [ -x "$OUT/macn-play" ] || "$ROOT/mac/scripts/build_play_helper.sh"
 cp "$OUT/macn-play" "$APP/Contents/MacOS/macn-play"
 R=$APP/Contents/Resources
-mkdir -p "$R/Licenses"
+mkdir -p "$R/Licenses" "$R/AndroidTools"
+# Split-APK merge (APKEditor) + signing (uber-apk-signer), run on the user's Java.
+cp "$ROOT/mac/Vendor/apkeditor/APKEditor.jar" "$ROOT/mac/Vendor/uber-apk-signer/uber-apk-signer.jar" "$R/AndroidTools/"
+clang -dynamiclib -arch arm64 -arch arm64e -O2 -o "$R/AndroidTools/libmacnjitfix.dylib" "$ROOT/mac/Tools/jitfix/jitfix.c"
+cp "$ROOT/mac/Vendor/apkeditor/LICENSE" "$R/Licenses/APKEditor-Apache-2.0.txt"
+cp "$ROOT/mac/Vendor/uber-apk-signer/LICENSE" "$R/Licenses/uber-apk-signer-Apache-2.0.txt"
 cp "$ROOT/mac/Vendor/apkeep/LICENSE" "$R/Licenses/apkeep-MIT.txt"
 cp "$ROOT/mac/Vendor/rs-google-play/gpapi/LICENSE" "$R/Licenses/rs-google-play-MIT.txt"
 cp "$ROOT/LICENSE" "$R/Licenses/MACN-cheese-iPadn-GPL-2.0.txt"
