@@ -14,6 +14,7 @@ enum MacPort {
     static let isMac = false
     #endif
 
+    static let noInstallMessage = "MACN-cheese doesn't install apps. The file was saved to your Desktop instead."
     private static let folderKey = "macnExportFolder"
     private static let autoSaveKey = "macnAutoSave"
 

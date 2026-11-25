@@ -440,6 +440,7 @@ enum NativeInstaller {
     /// stays on this device; it is handed to the system installer directly.
     static func install(package: URL, bundleID: String, blockUpdates: Bool = false,
                         progress: @escaping @Sendable (Phase) -> Void) async throws -> Outcome {
+        if MacPort.isMac { throw ToolError.message(MacPort.noInstallMessage) }
         guard isAvailable else { throw ToolError.message(AppText.text("当前版本不包含原生安装组件。")) }
         guard isSystemVersionSupported else { throw ToolError.message(AppText.text("原生安装需要 iOS 17.4 及以上系统。当前系统请改用「一键安装」或「本机证书」。")) }
         let token = try await acquireGate(waitForCancelled: true)

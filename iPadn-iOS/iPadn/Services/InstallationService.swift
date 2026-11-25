@@ -47,6 +47,7 @@ final class InstallationService: ObservableObject {
     /// is needed. Only name, bundle ID, version and the local URL leave the
     /// device; the IPA never does.
     func automaticInstallURL(job: DownloadJob, file: URL) async throws -> URL {
+        if MacPort.isMac { throw ToolError.message(MacPort.noInstallMessage) }
         let server = LoopbackServer()
         try await server.start()
         let packageURL = try server.register(file)
@@ -56,6 +57,7 @@ final class InstallationService: ObservableObject {
     }
 
     func localInstallURL(job: DownloadJob, file: URL, host: String, icon: URL? = nil) async throws -> URL {
+        if MacPort.isMac { throw ToolError.message(MacPort.noInstallMessage) }
         let host = try ManifestBuilder.localHost(host)
         // Fetch and resize icons off the main actor alongside certificate,
         // mDNS and loopback host checks instead of serializing after server startup.
@@ -156,6 +158,7 @@ final class InstallationService: ObservableObject {
     private let files = LoopbackServer(port: 8000, compatibilityMode: true)
 
     func installURL(job: DownloadJob, file: URL, plistServer: String) async throws -> URL {
+        if MacPort.isMac { throw ToolError.message(MacPort.noInstallMessage) }
         let url = try ManifestBuilder.installURL(app: job.app, filename: file.lastPathComponent, plistServer: plistServer)
         try await files.start()
         _ = try files.register(file)
@@ -438,6 +441,7 @@ enum ManifestBuilder {
     }
 
     static func installURL(app: StoreApp, filename: String, plistServer: String) throws -> URL {
+        if MacPort.isMac { throw ToolError.message(MacPort.noInstallMessage) }
         guard !app.bundleID.isEmpty, !app.version.isEmpty else {
             throw ToolError.message(AppText.text("安装包信息不完整，无法安装"))
         }

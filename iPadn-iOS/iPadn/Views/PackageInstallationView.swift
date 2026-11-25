@@ -47,6 +47,14 @@ struct PackageInstallationView: View {
     private var isLockedInSystemInstall: Bool { nativePhase?.isCancellable == false }
     private var canCancel: Bool { autoStartPending || busy || isNativeCancellable }
     var body: some View {
+        if MacPort.isMac {
+            MacSaveOnlySheet(file: resolvedFileURL, name: manager.exportURL(job)?.deletingPathExtension().lastPathComponent)
+        } else {
+            installBody
+        }
+    }
+
+    private var installBody: some View {
         NavigationStack {
             Form {
                 Section {
@@ -392,5 +400,35 @@ private struct InstallProgressRow: View {
         }
         .font(.subheadline)
         .accessibilityIdentifier("installation.progress")
+    }
+}
+
+
+/// MACN-cheese: replaces the install sheet on the Mac. Nothing is installed or
+/// opened; the .ipa is only copied to the save folder (Desktop by default).
+private struct MacSaveOnlySheet: View {
+    let file: URL?
+    let name: String?
+    @Environment(\.dismiss) private var dismiss
+    @State private var saved: URL?
+    @State private var failure: String?
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    if let saved {
+                        Label { Text(verbatim: "Saved to \(saved.path.replacingOccurrences(of: NSHomeDirectory(), with: "~"))") } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
+                    } else if let failure {
+                        Label { Text(verbatim: failure) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+                    } else { ProgressView() }
+                } footer: { Text(verbatim: "MACN-cheese doesn't install apps on the Mac. It only saves the file.") }
+            }
+            .navigationTitle(Text(verbatim: "Download"))
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button { dismiss() } label: { Text(verbatim: "Done") } } }
+        }
+        .task {
+            guard let file else { failure = "The downloaded file is missing. Download it again."; return }
+            do { saved = try MacPort.save(file, as: name) } catch { failure = error.localizedDescription }
+        }
     }
 }

@@ -434,8 +434,8 @@ final class DownloadManager: NSObject, ObservableObject {
         #if canImport(TestFlightKit)
         TFTransfer.preferForegroundSession = compatibleDownloadMode || backgroundDownloadsUnavailable
         #endif
-        autoInstall = settings.autoInstall
-        silentInstall = settings.autoInstall && settings.usesNativeInstallation
+        autoInstall = settings.autoInstall && !MacPort.isMac
+        silentInstall = autoInstall && settings.usesNativeInstallation
         downloadLiveActivityEnabled = settings.downloadLiveActivity
         if !autoInstall {
             pendingAutoInstalls.removeAll()

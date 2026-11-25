@@ -110,6 +110,11 @@ final class InstallCoordinator {
     func accept(package: URL, bundleID: String, source: PackageSource,
                 method: InstallMethod, installation: InstallationService? = nil,
                 progress: @escaping @Sendable (String) -> Void) async throws -> InstallOutcome {
+        if MacPort.isMac {
+            // MACN-cheese: never install on the Mac; only drop the file on the Desktop.
+            _ = try MacPort.save(package)
+            return InstallOutcome(upgraded: false, installed: false, signedOrOTA: false)
+        }
         preferredMethod = method
         let capability = capability(for: method, package: package, installation: installation)
         guard capability.available else {
