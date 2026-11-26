@@ -1,0 +1,6 @@
+{
+  "productName": "LINCE",
+  "bundle": {
+    "targets": ["deb", "appimage"]
+  }
+}

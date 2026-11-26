@@ -1,0 +1,27 @@
+{
+  "name": "winn-lince",
+  "version": "0.1.0",
+  "description": "WINN (Windows) and LINCE (Linux): download App Store IPAs and Google Play APKs. Nothing is installed.",
+  "private": true,
+  "license": "GPL-2.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "sidecars": "bash scripts/prepare-sidecars.sh"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.9.0",
+    "@tauri-apps/plugin-dialog": "^2.4.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.0",
+    "typescript": "~5.9.0",
+    "vite": "^7.1.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

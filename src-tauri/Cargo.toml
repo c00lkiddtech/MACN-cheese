@@ -1,0 +1,29 @@
+[package]
+name = "winn-lince"
+version = "0.1.0"
+description = "WINN (Windows) and LINCE (Linux): App Store IPA and Google Play APK downloader"
+authors = ["c00lkiddtech"]
+license = "GPL-2.0-or-later"
+edition = "2021"
+default-run = "winn-lince"
+
+[lib]
+name = "winn_lince_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "6"
+keyring = "3"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true
+codegen-units = 4
