@@ -8,7 +8,7 @@ It's built from iPadn's SwiftUI source as a Mac Catalyst app (Apple Silicon, mac
 
 ## Download
 
-Get `MACN-cheese-<version>-macOS-arm64.zip` from [Releases](https://github.com/OBLIVIONck/MACN-cheese/releases), unzip it, and move `MACN-cheese.app` to `/Applications` or `~/Applications`.
+Get `MACN-cheese-<version>-macOS-arm64.zip` from [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases), unzip it, and move `MACN-cheese.app` to `/Applications` or `~/Applications`.
 
 The app is **ad-hoc signed, not notarized**. On first launch, **right-click the app, choose Open, then choose Open again**. If macOS still refuses, go to System Settings › Privacy & Security and click "Open Anyway", or run:
 

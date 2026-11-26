@@ -75,7 +75,7 @@ struct AppRelease: Codable, Equatable {
 
 enum AppUpdateService {
     // MACN-cheese checks its own releases, never upstream iPadn's.
-    static let repository = MacPort.isMac ? "OBLIVIONck/MACN-cheese" : "mengangs/ipadn"
+    static let repository = MacPort.isMac ? "c00lkiddtech/MACN-cheese" : "mengangs/ipadn"
     static var currentVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
     }

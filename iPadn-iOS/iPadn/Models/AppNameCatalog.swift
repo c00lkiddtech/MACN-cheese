@@ -57,7 +57,7 @@ enum AppNameCatalog {
         let session = URLSession(configuration: configuration)
         defer { session.invalidateAndCancel() }
         let url = URL(string: MacPort.isMac
-            ? "https://raw.githubusercontent.com/OBLIVIONck/MACN-cheese/main/iPadn-iOS/iPadn/Resources/app-name-directory.json"
+            ? "https://raw.githubusercontent.com/c00lkiddtech/MACN-cheese/main/iPadn-iOS/iPadn/Resources/app-name-directory.json"
             : "https://raw.githubusercontent.com/mengangs/ipadn/main/iPadn-iOS/iPadn/Resources/app-name-directory.json")!
         let (data, response) = try await session.data(from: url)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw ToolError.message(AppText.text("名称目录暂时无法更新")) }

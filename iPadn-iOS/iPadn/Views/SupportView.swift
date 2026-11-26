@@ -9,9 +9,9 @@ enum SupportLinks {
     static let usdtAddress = "0x5f0cff7587b9fc305f9fa626135789bd5100818e"
     #if targetEnvironment(macCatalyst)
     // MACN-cheese: everything points at the port's own repository.
-    static let telegram = URL(string: "https://github.com/OBLIVIONck/MACN-cheese/issues")!
-    static let releases = URL(string: "https://github.com/OBLIVIONck/MACN-cheese/releases")!
-    static let repository = URL(string: "https://github.com/OBLIVIONck/MACN-cheese")!
+    static let telegram = URL(string: "https://github.com/c00lkiddtech/MACN-cheese/issues")!
+    static let releases = URL(string: "https://github.com/c00lkiddtech/MACN-cheese/releases")!
+    static let repository = URL(string: "https://github.com/c00lkiddtech/MACN-cheese")!
     static let issues = telegram
     static let upstream = URL(string: "https://github.com/mengangs/ipadn")!
     #else
