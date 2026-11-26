@@ -291,6 +291,34 @@ fn helper_error(stdout: &str, stderr: &str, code: i32) -> String {
     }
 }
 
+const RELEASES_URL: &str = "https://github.com/c00lkiddtech/MACN-cheese/releases";
+
+#[tauri::command]
+fn open_releases() -> Result<(), String> {
+    #[cfg(windows)]
+    {
+        std::process::Command::new("cmd")
+            .args(["/C", "start", "", RELEASES_URL])
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(RELEASES_URL)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(all(unix, not(target_os = "macos")))]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(RELEASES_URL)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 #[tauri::command]
 fn app_brand() -> BrandInfo {
     BrandInfo {
@@ -891,6 +919,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             app_brand,
+            open_releases,
             save_folder,
             java_available,
             apple_status,

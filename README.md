@@ -4,9 +4,26 @@
 
 It's built from iPadn's SwiftUI source as a Mac Catalyst app (Apple Silicon, macOS 26 or later). This is the same app, adapted for the Mac. It isn't a wrapper and doesn't use an iOS emulator.
 
+This repository is also the home of **WINN** (Windows) and **LINCE** (Linux), a shared Tauri 2 companion in [`desktop/`](desktop/).
+
 > MACN-cheese is an unofficial port and isn't affiliated with iPadn or Apple. Credit for the app goes to mengangs and the iPadn contributors. Licensed GPL-2.0, same as upstream (see [LICENSE](LICENSE)). The original READMEs are kept in [`docs/UPSTREAM_README_EN.md`](docs/UPSTREAM_README_EN.md) and [`docs/UPSTREAM_README.md`](docs/UPSTREAM_README.md).
 
+## Platforms
+
+| Name | Platform | Status | Where to get it |
+|---|---|---|---|
+| **MACN-cheese** | macOS (Apple Silicon, 26+) | Available | [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases) (`MACN-cheese-*-macOS-arm64.zip`) |
+| **WINN** | Windows | Available | [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases) (`WINN_*-x64-setup.exe`) |
+| **LINCE** | Linux | Available | [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases) (`.deb` or `.AppImage`) |
+| **IPADN+** | iOS / iPadOS | Planned | — |
+| **ANDN-** | Android | Planned | — |
+| **WEBN** | Web (GitHub Pages) | Planned | — |
+
+All of them only **download** packages (`.ipa`, `.apk`, `.pkg`). Nothing is installed, and FairPlay / other DRM is never stripped.
+
 ## Download
+
+### Mac
 
 Get `MACN-cheese-<version>-macOS-arm64.zip` from [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases), unzip it, and move `MACN-cheese.app` to `/Applications` or `~/Applications`.
 
@@ -15,6 +32,12 @@ The app is **ad-hoc signed, not notarized**. On first launch, **right-click the 
 ```bash
 xattr -dr com.apple.quarantine /Applications/MACN-cheese.app
 ```
+
+### Windows (WINN) and Linux (LINCE)
+
+Grab the WINN installer or the LINCE `.deb` / `.AppImage` from the same [Releases](https://github.com/c00lkiddtech/MACN-cheese/releases) page. These builds are unsigned, so Windows SmartScreen may ask you to run anyway, and the AppImage may need `chmod +x`. Merging split Android packages needs a JRE or JDK.
+
+Source and build notes for WINN and LINCE are in [`desktop/README.md`](desktop/README.md).
 
 ## What works on the Mac
 
@@ -40,7 +63,7 @@ xattr -dr com.apple.quarantine /Applications/MACN-cheese.app
 | Telegram / donation links | Replaced with this repo's links. Please support upstream iPadn directly. |
 | Translation popover | Uses direct in-app translation instead, because the popover API isn't available in Catalyst |
 
-In-app update checks look at **this** repo's releases, never upstream iPadn's.
+In-app update checks look at **this** repo's releases, never upstream iPadn's. WINN and LINCE open this same releases page from their Updates button.
 
 ## Building from source (no Xcode needed)
 
@@ -61,14 +84,15 @@ Notes:
 
 The **Android** tab downloads free Google Play apps: paste a package name (`com.example.app`) or a Play Store link, or search, then press **Download**. By default you get **one installable `.apk`**: base and split APKs are merged with APKEditor, then zipaligned and signed with a local debug key (created once in `~/Library/Application Support/MACN-cheese/android-debug.jks`) by uber-apk-signer. Merging needs Java (`brew install openjdk`); on Macs with SIP/AMFI off, a small bundled shim (`mac/Tools/jitfix`) works around the JDK-8326663 HotSpot crash. `.apks`, `.xapk` and a folder of split APKs are still available, and **Convert .apks / .xapk to .apk…** merges files you already have (or run `macn-play merge file.apks`). Because the merged APK is re-signed, it can't update a copy installed from Google Play; uninstall that first. It uses the bundled `macn-play` helper (`mac/PlayHelper`, Rust, built by `mac/scripts/build_play_helper.sh`) with anonymous sessions only.
 
-Nothing gets installed on the Mac: finished `.ipa`, `.pkg` and `.apk` files are saved to `~/Desktop` by default (Settings › Downloads › Mac to change it).
+Nothing gets installed on the Mac: finished `.ipa`, `.pkg` and `.apk` files are saved to `~/Desktop` by default (Settings › Downloads › Mac to change it). WINN and LINCE use the same helper, as a separate process, and save to Downloads or Desktop.
 
 ## Credits
 
 - **[iPadn](https://github.com/mengangs/ipadn)** by mengangs and contributors (GPL-2.0). This port is based on it.
+- **[ipatool](https://github.com/majd/ipatool)** by Majd Alfhaily (MIT). WINN and LINCE use a bundled copy for App Store sign-in, search and IPA downloads.
 - **[apkeep](https://github.com/EFForg/apkeep)** by William Budington / Electronic Frontier Foundation (MIT, license in [`mac/Vendor/apkeep/LICENSE`](mac/Vendor/apkeep/LICENSE)). The Android tab's Google Play download flow (anonymous login, base + split APKs) follows apkeep.
 - **[rs-google-play](https://github.com/EFForg/rs-google-play)** (`gpapi`, `googleplay-protobuf`) by Bill Budington / EFF and David Weinstein (MIT, vendored in [`mac/Vendor/rs-google-play`](mac/Vendor/rs-google-play)). The Google Play protocol used by the bundled `macn-play` helper.
 - **[APKEditor](https://github.com/REAndroid/APKEditor)** by REAndroid (Apache-2.0, jar and license in [`mac/Vendor/apkeditor`](mac/Vendor/apkeditor)). Merges base + split APKs into one `.apk`.
 - **[uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)** by Patrick Favre-Bulle (Apache-2.0, jar and license in [`mac/Vendor/uber-apk-signer`](mac/Vendor/uber-apk-signer)). Zipaligns and signs the merged `.apk` with a local debug key.
 - **[Aurora Store](https://gitlab.com/AuroraOSS/AuroraStore)** by AuroraOSS: device profiles and the anonymous session dispenser (GPL-3.0-or-later). No personal Google account is used.
-- Third-party components are listed in [`iPadn-iOS/THIRD_PARTY_NOTICES.md`](iPadn-iOS/THIRD_PARTY_NOTICES.md).
+- Third-party components are listed in [`iPadn-iOS/THIRD_PARTY_NOTICES.md`](iPadn-iOS/THIRD_PARTY_NOTICES.md) and [`desktop/THIRD_PARTY_NOTICES.md`](desktop/THIRD_PARTY_NOTICES.md).

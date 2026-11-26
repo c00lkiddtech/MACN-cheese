@@ -1,6 +1,6 @@
 # WINN & LINCE
 
-**WINN** (Windows) and **LINCE** (Linux) are a shared [Tauri 2](https://tauri.app/) app for downloading App Store `.ipa` / `.pkg` files and Google Play `.apk` files. They are the Windows and Linux companions to [MACN-cheese](https://github.com/c00lkiddtech/MACN-cheese), a macOS port of [iPadn](https://github.com/mengangs/ipadn).
+**WINN** (Windows) and **LINCE** (Linux) live in the [MACN-cheese](https://github.com/c00lkiddtech/MACN-cheese) monorepo, in this `desktop/` folder. They are a shared [Tauri 2](https://tauri.app/) app for downloading App Store `.ipa` / `.pkg` files and Google Play `.apk` files, and are companions to the macOS MACN-cheese app (a port of [iPadn](https://github.com/mengangs/ipadn)).
 
 This is an unofficial companion. It isn't affiliated with iPadn, Apple, or Google.
 
@@ -10,33 +10,32 @@ This is an unofficial companion. It isn't affiliated with iPadn, Apple, or Googl
 - **Android tab** — search and download free Google Play apps with the bundled `macn-play` helper, using anonymous [Aurora OSS](https://gitlab.com/AuroraOSS/AuroraStore) sessions. Your Google account is never used. If Java is installed, split packages are merged into one `.apk` with APKEditor and signed with a local debug key. Without Java, the app saves `.apks` and tells you why.
 - **Downloads only** — finished files go to your **Downloads** or **Desktop** folder. Nothing is ever installed.
 - **No DRM stripping** — FairPlay-protected IPAs stay protected.
+- **Updates** — the in-app Updates button opens [this repo's releases](https://github.com/c00lkiddtech/MACN-cheese/releases).
 
 ## Install
 
-Get the latest build from [Releases](https://github.com/c00lkiddtech/WINN-LINCE/releases):
-
-- Windows: `WINN_…_x64-setup.exe` (NSIS). Windows may warn about an unsigned app; that’s expected until it’s signed.
-- Linux: `LINCE_….deb` or `.AppImage`.
+Get the latest **WINN** (Windows NSIS installer) or **LINCE** (`.deb` / `.AppImage`) build from the [MACN-cheese Releases](https://github.com/c00lkiddtech/MACN-cheese/releases) page, not from a separate repository.
 
 Merging split Android packages needs a JRE or JDK (`java` on your `PATH`, or `JAVA_HOME`).
 
 ## Build from source
 
-Requirements: Rust, Node 20+, and on Linux the usual Tauri packages (`libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `libssl-dev`, `patchelf`, and friends).
+From the repository root:
 
 ```bash
+cd desktop
 npm install
-bash scripts/prepare-sidecars.sh          # official ipatool + macn-play
+bash scripts/prepare-sidecars.sh
 cargo build --release --manifest-path helpers/PlayHelper/Cargo.toml --target-dir .build/play-target
-bash scripts/prepare-sidecars.sh          # copy the helper you just built
+bash scripts/prepare-sidecars.sh
 npm run tauri -- build
 ```
 
-GitHub Actions builds LINCE on Ubuntu and WINN on Windows (see `.github/workflows/release.yml`). Tag a `v*` release to attach both artifacts.
+Requirements: Rust, Node 20+, and on Linux the usual Tauri packages (`libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `libssl-dev`, `patchelf`, and friends). GitHub Actions builds LINCE on Ubuntu and WINN on Windows (see [`.github/workflows/desktop.yml`](../.github/workflows/desktop.yml)). Tag a `v*` release to attach both artifacts.
 
 ## Licenses
 
-The UI is **GPL-2.0-or-later**, same family as iPadn and MACN-cheese (see [LICENSE](LICENSE)). `macn-play` is a **separate program**, licensed **GPL-3.0-or-later**, because it embeds Aurora OSS device profiles. Credits and license texts are in the app’s Credits tab and in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md):
+The UI is **GPL-2.0-or-later**, same family as iPadn and MACN-cheese (see the repo [LICENSE](../LICENSE)). `macn-play` is a **separate program**, licensed **GPL-3.0-or-later**, because it embeds Aurora OSS device profiles. Credits and license texts are in the app’s Credits tab and in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md):
 
 - [iPadn](https://github.com/mengangs/ipadn) — GPL-2.0-or-later, mengangs and contributors
 - [ipatool](https://github.com/majd/ipatool) — MIT, Majd Alfhaily

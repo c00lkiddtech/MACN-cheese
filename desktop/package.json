@@ -1,6 +1,6 @@
 {
   "name": "winn-lince",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "WINN (Windows) and LINCE (Linux): download App Store IPAs and Google Play APKs. Nothing is installed.",
   "private": true,
   "license": "GPL-2.0-or-later",

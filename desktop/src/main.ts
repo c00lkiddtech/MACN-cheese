@@ -84,6 +84,7 @@ function render() {
         <button data-tab="android" class="${tab === "android" ? "active" : ""}">Android</button>
         <button data-tab="credits" class="${tab === "credits" ? "active" : ""}">Credits</button>
       </nav>
+      <button class="btn ghost" id="check-updates" title="Open releases on GitHub">Updates</button>
     </header>
     <section class="panel" id="panel"></section>
     <div class="statusbar">
@@ -103,6 +104,9 @@ function render() {
       tab = (b as HTMLButtonElement).dataset.tab as typeof tab;
       render();
     });
+  });
+  app.querySelector("#check-updates")?.addEventListener("click", async () => {
+    try { await invoke("open_releases"); } catch (e) { setMsg("", String(e)); render(); }
   });
   app.querySelector("#dest")?.addEventListener("change", async (e) => {
     dest = (e.target as HTMLSelectElement).value as Dest;
@@ -274,7 +278,7 @@ function creditsView() {
     </div>
     <div>
       <h3>This app</h3>
-      <p>${esc(brand.name)} itself is licensed <strong>GPL-2.0-or-later</strong>, same family as iPadn and MACN-cheese. macn-play remains a separate GPL-3.0-or-later program shipped alongside it. Source, notices and license texts are in the <a href="https://github.com/c00lkiddtech/WINN-LINCE" target="_blank" rel="noreferrer">WINN-LINCE repository</a>.</p>
+      <p>${esc(brand.name)} itself is licensed <strong>GPL-2.0-or-later</strong>, same family as iPadn and MACN-cheese. macn-play remains a separate GPL-3.0-or-later program shipped alongside it. Source, notices and license texts are in the <a href="https://github.com/c00lkiddtech/MACN-cheese" target="_blank" rel="noreferrer">MACN-cheese repository</a> (the <code>desktop/</code> folder).</p>
     </div>
   `;
   return el;

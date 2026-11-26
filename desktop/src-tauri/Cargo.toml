@@ -1,6 +1,6 @@
 [package]
 name = "winn-lince"
-version = "0.1.0"
+version = "0.2.0"
 description = "WINN (Windows) and LINCE (Linux): App Store IPA and Google Play APK downloader"
 authors = ["c00lkiddtech"]
 license = "GPL-2.0-or-later"

@@ -4,7 +4,7 @@ import plistlib, sys
 src, dst, name, bundle_id = sys.argv[1:5]
 p = plistlib.load(open(src, 'rb'))
 subs = {'$(DEVELOPMENT_LANGUAGE)': 'en', '$(EXECUTABLE_NAME)': name, '$(PRODUCT_BUNDLE_IDENTIFIER)': bundle_id,
-        '$(PRODUCT_NAME)': name, '$(MARKETING_VERSION)': '0.1.0', '$(CURRENT_PROJECT_VERSION)': '1'}
+        '$(PRODUCT_NAME)': name, '$(MARKETING_VERSION)': '0.2.0', '$(CURRENT_PROJECT_VERSION)': '2'}
 def fix(v):
     if isinstance(v, str):
         for a, b in subs.items(): v = v.replace(a, b)
