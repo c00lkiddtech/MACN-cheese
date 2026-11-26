@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WINN-LINCE",
+  "version": "0.1.0",
+  "identifier": "com.oblivion.winn-lince",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "WINN-LINCE",
+        "width": 1100,
+        "height": 740,
+        "minWidth": 880,
+        "minHeight": 600,
+        "resizable": true,
+        "backgroundColor": "#0b0d12"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "deb",
+      "appimage",
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "resources": [
+      "resources/AndroidTools"
+    ],
+    "externalBin": [
+      "binaries/ipatool",
+      "binaries/macn-play"
+    ],
+    "copyright": "GPL-2.0-or-later. See CREDITS in the app and THIRD_PARTY_NOTICES.md.",
+    "category": "Utility",
+    "shortDescription": "Download App Store IPAs and Google Play APKs. Nothing is installed.",
+    "longDescription": "WINN (Windows) and LINCE (Linux) download .ipa and .apk packages to your Downloads or Desktop folder. They never install apps and never strip FairPlay or other DRM."
+  }
+}
